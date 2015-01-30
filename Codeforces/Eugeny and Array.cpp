@@ -1,0 +1,67 @@
+/*
+ID: ck891191
+PROG:
+LANG: C++
+*/
+#include <vector>
+#include <list>
+#include <map>
+#include <set>
+#include <deque>
+#include <queue>
+#include <stack>
+#include <string>
+#include <bitset>
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <utility>
+#include <sstream>
+#include <fstream>
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <cmath>
+#include <cstring>
+#include <cstdlib>
+using namespace std;
+#define dump(x) cerr <<  __LINE__ << " : "<< #x << "  =  " << (x) <<endl;
+#define FR(i,a,b) for(int i=(a);i<(b);++i)//[a,b)
+#define CL(a,x) memset(a,x,sizeof(a))
+#define MP(A,B) make_pair(A,B)
+#define lson l, m, rt << 1
+#define rson m + 1, r, rt << 1 | 1
+//freopen("","r",stdin);
+//freopen("","w",stdout);
+//ifstream fin("");
+//ofstream fout("");
+const int MAXN = 9999;
+const int INF=(1<<30);
+const double PI=acos(-1.0);
+const double EPS=1e-11;
+
+int n,m;
+int a[200000+5];
+int n1,n2;
+
+int main() {
+    int i;
+    scanf("%d%d", &n,&m);
+    n1=n2=0;
+    for (i=1;i<=n;i++) {
+        scanf("%d",&a[i]);
+        if (a[i]==1) n1++;
+        else n2++;
+    }
+    for (i=0;i<m;i++) {
+        int l,r;
+        scanf("%d%d", &l, &r);
+        if ((r-l+1)%2) printf("0\n");
+        else {
+           if (min(n1,n2)*2>=r-l+1) printf("1\n");
+           else printf("0\n");
+        }
+    }
+
+    return 0;
+}
