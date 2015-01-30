@@ -1,0 +1,118 @@
+/*
+ID: ck89119
+PROG:
+LANG: C++
+*/
+#include <vector>
+#include <list>
+#include <map>
+#include <set>
+#include <deque>
+#include <queue>
+#include <stack>
+#include <string>
+#include <bitset>
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <utility>
+#include <sstream>
+#include <fstream>
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <cmath>
+#include <cstring>
+#include <cstdlib>
+using namespace std;
+#define dump(x) cerr <<  __LINE__ << " : "<< #x << "  =  " << (x) <<endl
+#define FR(i,a,b) for(int i=(a);i<(b);++i)//[a,b)
+#define CLR(a,x) memset(a,x,sizeof(a)) //0:0, -1:-1, INF:0x3f, -INF:0x80
+#define MP(A,B) make_pair(A,B)
+#define PB(A) push_back(A)
+#define PAU system("pause")
+#define lson l, m, rt << 1
+#define rson m + 1, r, rt << 1 | 1
+#define lowbit(n) (n^(n-1))&n
+#define fin freopen(".in","r",stdin)
+#define fout freopen(".out","w",stdout)
+//ifstream fin("");
+//ofstream fout("");
+#define LL long long
+
+template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+template <class T> void out (vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+const int MAXN=99999;
+const int MAXM=9999999;
+const int INF=0x3f3f3f3f;
+const double PI=acos(-1.0);
+const double EPS=1e-11;
+
+struct Point {
+  int x, y;
+  Point(int _x, int _y): x(_x), y(_y) {}
+};
+
+class Solution {
+public:
+    static int cmp(const Point &a, const Point &b) {
+      if (a.x != b.x) return a.x < b.x;
+      else return a.y < b.y;
+    }
+
+    int check(Point &a, Point &b, Point &c) {
+      return (b.y - a.y) * (c.x - a.x) == (c.y - a.y) * (b.x - a.x);
+    }
+
+    int maxPoints(vector<Point> &points) {
+      int i, j, k;
+      vector<Point> vec;
+      vector<int> num;
+      sort(points.begin(), points.end(), cmp);
+      vec.push_back(points[0]);
+      num.push_back(1);
+      for (i = 1; i < points.size(); ++i)
+        if (!(points[i].x == points[i-1].x && points[i].y == points[i-1].y)) {
+          vec.push_back(points[i]);
+          num.push_back(1);
+        } else {
+          num[num.size()-1]++;
+        } 
+      int n = vec.size();
+      if (n == 0) return 0;
+      if (n == 1) return num[0];
+      
+      int ans = 0;
+      for (i = 0; i < n; ++i)
+        for (j = i+1; j < n; ++j) {
+          int cnt = 0;
+          for (k = 0; k < n; ++k)
+            if (check(vec[i], vec[j], vec[k])) {
+              cnt += num[k];
+              //dump(i);
+              //dump(j);
+              //dump(k);
+            }
+          //dump(i); dump(j); dump(cnt);
+          ans = max(ans, cnt);
+        }
+      return ans;
+    }
+};
+
+int main() {
+  //fin; fout;
+  Solution s;
+  vector<Point> vec;
+  vec.push_back(Point(84,250));
+  vec.push_back(Point(0,0));
+  vec.push_back(Point(1,0));
+  vec.push_back(Point(0,-70));
+  vec.push_back(Point(0,-70));
+  vec.push_back(Point(1,-1));
+  vec.push_back(Point(21,10));
+  vec.push_back(Point(42,90));
+  vec.push_back(Point(-42,-230));
+  cout << s.maxPoints(vec) << endl;
+  return 0;
+}
