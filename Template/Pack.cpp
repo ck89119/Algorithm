@@ -23,11 +23,12 @@ using namespace std;
 #define ROF(i,n) RF(i,n,0)//[0,n)
 #define CL(a,x) memset(a,x,sizeof(a))
 
+const int N = 1000 + 5;
+const int V = 100000 + 5;
 const int INF=(1<<30);
 const double PI=acos(-1.0);
 const double EPS=1e-11;
 
-int V, N;
 int c[N];
 int f[V];
 int n[N];

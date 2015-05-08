@@ -49,7 +49,7 @@ const double PI=acos(-1.0);
 const double EPS=1e-11;
 const int CHILD_NUM = 26;
 
-struct Trie {
+struct Ac_automaton {
   int next[MAXN][CHILD_NUM], fail[MAXN];
   int end[MAXN];
   int size, root;
@@ -132,7 +132,7 @@ struct Trie {
     return 0;
   }
 };
-Trie ac;
+Ac_automaton ac;
 
 int main() {
   //fin; fout;
