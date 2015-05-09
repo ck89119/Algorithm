@@ -1,79 +1,92 @@
-//const int maxn=maxm=1000005;
-//const int inf=1000000000;
-//int nbs[maxn],next[maxm],value[maxn],open[maxn],open1[maxn];
-//int ev[maxm],ew[maxm],mk[maxn],n,m,num,cur,tail ;
-//
-//int BellmanFord (int src)
-//{
-//    int i,j,k,l,t,u,v,p=0;
-//    for(i=1;i<=n;i++) {value[i]=inf;mk[i]=0;}
-//    value[src]=tail=0;  open[0]=src;
-//    while(++p,tail>=0){
-//        for(i=0;i<=tail;i++) open1[i]=open[i];
-//        for(cur=0,t=tail,tail=-1;cur<=t;cur++)
-//           for(u=open1[cur],i=nbs[u];i;i=next[i]){
-//               v=ev[i];
-//               if (value[u]+ew[i]<value[v]){
-//	               value[v]=value[u]+ew[i];
-//                   if(mk[v]!=p){open[++tail]=v;mk[v]=p;}
-//               }
-//           }
-//    }
-//}
-
+//#include <bits/stdc++.h>
 #include <iostream>
+#include <cstring>
+#include <cstdio>
+#include <vector>
 using namespace std;
-const int inf=10000000;
-const int maxv=100000;
-const int maxe=1000000;
-struct EDGE{
-  int u, v;
-  int w;
-};
-int noden, edgen, s;
-int dis[maxv];
-EDGE edge[maxe];
+
+#define dump(x) cerr <<  __LINE__ << " : "<< #x << "  =  " << (x) << endl
+#define CLR(a, x) memset(a, x, sizeof(a)) //0:0, -1:-1, INF:0x3f, -INF:0x80
+#define MP(A, B) make_pair(A, B)
+#define PB(A) push_back(A)
+#define lson l, m, rt << 1
+#define rson m + 1, r, rt << 1 | 1
+#define lowbit(x) x & (-x)
+typedef long long LL;
+typedef unsigned long long ULL;
+typedef pair<int, int> PII;
+
+template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+const int N = 1000 + 5;
+const int M = 21000 + 5;
+const int INF = 0x3f3f3f3f;
+const int MOD = 1000000007;
+
+vector<PII> edge[N];
+int n, ml, md;
+int dis[N];
 
 int init() {
-    int i, u, v, w;
-    cin >> noden >> edgen >> s;
-    for (i = 1; i <= nodes; i++)
-	  dis[i] = inf;
-    dis[s] = 0;
-    for (i = 1; i <= edgen; i++) {
-      cin >> u >> v >> w;
-      edge[i].u = u;
-      edge[i].v = v;
-      edge[i].w = w;
-    }
-    return 0;
+  int u, v, w;
+  cin >> n >> ml >> md;
+  for (int i = 0; i < ml; ++i) {
+    cin >> u >> v >> w;
+    edge[u].push_back(MP(v, w));
+  }
+
+  for (int i = 0; i < md; ++i) {
+    cin >> u >> v >> w;
+    edge[v].push_back(MP(u, -w));
+  }
+
+  for (int i = 1; i < n; ++i) {
+    u = i; v = i + 1; w = 0;
+    edge[v].push_back(MP(u, -w));
+  }
+
+  CLR(dis, 0x3f);
+  dis[1] = 0;
+
+  return 0;
 }
 
 int relax(int u, int v, int w) {
-    if (dis[v] > dis[u] + w)
-	  dis[v] = dis[u] + w;
-    return 0;
+  if (dis[v] > dis[u] + w)
+    dis[v] = dis[u] + w;
+  return 0;
 }
 
 int Bellman_Ford() {
-    int i, j, flag;
-    for (i = 1; i <= n-1; i++)
-      for (j = 1; j <= edgen; j++) {
-          relax(edge[j].u, edge[j].v, edge[j].w);
+  for (int k = 0; k < n - 1; k++)
+    for (int u = 1; u <= n; ++u)
+      for (int i = 0; i < edge[u].size(); ++i) {
+        int v = edge[u][i].first;
+        int w = edge[u][i].second;
+        relax(u, v, w);
       }
-    flag = 1;
-    for (i = 1; i <= edgen; i++)
-      if (dis[edge[i].v] > dis[edge[i].u] + edge[i].w) {
-        flag = 0; 
-		break;
-      }
-    return flag;
+
+  for (int u = 1; u <= n; ++u)
+    for (int i = 0; i < edge[u].size(); ++i) {
+      int v = edge[u][i].first;
+      int w = edge[u][i].second;
+      if (dis[v] > dis[u] + w) return 0;
+    }
+
+  return 1;
 }
 
 int main() {
-    init();
-    if (Bellman_Ford()) {
-	  ...
-	}
-    return 0;
+  #ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    //freopen("out.txt", "w", stdout);
+  #endif
+  init();
+  if (Bellman_Ford()) {
+    if (dis[n] >= INF) cout << -2 << endl;
+    else cout << dis[n] << endl;
+  } else {
+    cout << -1 << endl;
+  }
+  return 0;
 }

@@ -56,9 +56,7 @@ struct Edge {
   int to;
   int w;
 };
-vector<Edge> e[MAXM];
-vector<int> S[MAXN];
-int w[MAXN];
+vector<Edge> e[MAXN];
 int n, m, size;
 
 int add_edge(int u, int v, int w) {
@@ -70,12 +68,12 @@ int add_edge(int u, int v, int w) {
 
 int spfa(int st, int ed) {
   queue<int> q;
-  int vis[MAXM], dis[MAXM];
+  int vis[MAXM], dis[MAXM], cnt[MAXN];
   while (not q.empty()) q.pop();
-  CLR(vis, 0); CLR(dis, INF);
+  CLR(vis, 0); CLR(dis, INF); CLR(cnt, 0);
   
   dis[st] = 0;
-  q.push(st); vis[st] = 1;
+  q.push(st); vis[st] = 1; ++cnt[st];
 
   while (not q.empty()) {
     int u = q.front(); q.pop();
@@ -87,14 +85,15 @@ int spfa(int st, int ed) {
       if (dis[v] > dis[u] + w) {
         dis[v] = dis[u]+ w;
         if (not vis[v]) {
-          q.push(v); vis[v] = 1;
+          q.push(v); vis[v] = 1; ++cnt[v];
+          if (cnt[v] > n) return 0;
         }
       } 
     }
   }
   
   printf("%d\n", dis[ed] == INF ? -1 : dis[ed]);
-  return 0;
+  return 1;
 }
 
 
