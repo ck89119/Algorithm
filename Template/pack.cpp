@@ -34,37 +34,37 @@ int f[V];
 int n[N];
 
 int ZeroOnePack(int cost, int weight) {
-    int v;
-    for (v = V; v >= cost; v--)
-        f[v] = max(f[v], f[v-cost]+weight);
-    return 0;
+  int v;
+  for (v = V; v >= cost; --v)
+    f[v] = max(f[v], f[v - cost] + weight);
+  return 0;
 }
 
 int CompletePack(int cost, int weight) {
-    int v;
-    for (v = cost; v <= V; v++)
-        f[v] = max(f[v], f[v-cost]+weight);
-    return 0;
+  int v;
+  for (v = cost; v <= V; ++v)
+    f[v] = max(f[v], f[v - cost] + weight);
+  return 0;
 }
 
 int MutiplePack(int cost, int weight, int amount){
-    int k;
-    if (cost * amount >= V)
-        CompletePack(cost, weight);
-    k = 1;
-    while (k < amount){
-        ZeroOnePack(k*cost, k*weight);
-        amount -= k;
-        k *= 2;
-    }
-    ZeroOnePack(amount*cost, amount*weight);
-    return 0;
+  int k;
+  if (cost * amount >= V)
+    CompletePack(cost, weight);
+  k = 1;
+  while (k < amount) {
+    ZeroOnePack(k * cost, k * weight);
+    amount -= k;
+    k *= 2;
+  }
+  ZeroOnePack(amount * cost, amount * weight);
+  return 0;
 }
 
 int main(){
-    int i;
-    for (i = 1; i <= N; i++){
-        XXPack();
-    }
-    return 0;
+  int i;
+  for (i = 1; i <= N; i++){
+    XXPack();
+  }
+  return 0;
 }
