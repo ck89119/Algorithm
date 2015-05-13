@@ -61,6 +61,14 @@ int MutiplePack(int cost, int weight, int amount){
   return 0;
 }
 
+int GroupPack(int cost, int weight, int amount) {
+  for (int i = V; i >= 0; --i)
+    for (int j = 1; j <= amount; ++j)
+      if (i >= j * cost)
+        f[i] = max(f[i], f[i - j * cost] + j * weight);
+  return 0;
+}
+
 int main(){
   int i;
   for (i = 1; i <= N; i++){
