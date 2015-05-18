@@ -46,6 +46,7 @@ int init() {
 
 int dis[N];
 
+/* Hopcroft-Karp algorithm */
 int bfs() {
   queue<int> q;
   for (int i = 1; i <= p; ++i) {
@@ -94,6 +95,7 @@ int match() {
   return cnt;
 }
 
+/* Augmenting path algorithm */
 //int dfs(int u) {
   //for (int i = 0; i < edge[u].size(); ++i) {
     //int v = edge[u][i];
