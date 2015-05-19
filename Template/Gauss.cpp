@@ -52,6 +52,8 @@ const double EPS=1e-11;
 const int CHILD_NUM = 26;
 const int MOD = 1000000007;
 
+
+// n: #variables; a: coefficient matrix; l: if exist answers; ans: answers; d: the dimession of answers
 int gauss(int n, double a[][MAXN], int l[MAXN], double ans[MAXN]) {
   int d = 0;
   int r = 0;
