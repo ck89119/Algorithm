@@ -46,6 +46,7 @@ int Euler(int n) {
       }
       else {
         phi[i * p[j]] = phi[i] * p[j];
+        break;
       }
     }
   }
