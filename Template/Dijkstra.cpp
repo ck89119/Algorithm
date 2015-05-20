@@ -1,76 +1,56 @@
-#include <iostream>
-#include <cstdio>
+#include <bits/stdc++.h>
 using namespace std;
 
-const int inf=1000000000;
-const int maxn=1000005;
-const int maxm=1000005;
-int n,m,num,len,next[maxm],ev[maxm],ew[maxm]; 
-int value[maxn],mk[maxn],nbs[maxn],ps[maxn],heap[maxn]; 
+#define dump(x) cerr <<  __LINE__ << " : "<< #x << "  =  " << (x) << endl
+#define CLR(a, x) memset(a, x, sizeof(a)) //0:0, -1:-1, INF:0x3f, -INF:0x80
+#define MP(A, B) make_pair(A, B)
+#define PB(A) push_back(A)
+#define lson l, m, rt << 1
+#define rson m + 1, r, rt << 1 | 1
+#define lowbit(x) x & (-x)
+typedef long long LL;
+typedef unsigned long long ULL;
+typedef pair<int, int> PII;
 
-int update (int r) 
-{
-    int q=ps[r],p=q>>1; 
-    while(p && value[heap[p]]>value[r]){ 
-        ps[heap[p]]=q; 
-        heap[q]=heap[p]; 
-        q=p;  p=q>>1;
-    } 
-    heap[q]=r; ps[r]=q;
-    return 0;
-}
+template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+const int N = 99999;
+const int M = 9999999;
+const int INF = 0x3f3f3f3f;
+const int MOD = 1000000007;
 
-int getmin() 
-{ 
-    int  ret=heap[1],p=1,q=2,r=heap[len--]; 
-    while(q<=len){ 
-       if (q<len && value[heap[q+1]]<value[heap[q]]) q++; 
-       if (value[heap[q]]<value[r]) { 
-           ps[heap[q]]=p; 
-           heap[p]=heap[q]; 
-           p=q;  q=p<<1; 
-       } 
-       else break;
+int dis[N];
+vector<PII> edge[N];
+
+int dijkstra(int st) {
+  priority_queue<PII> q;
+  CLR(dis, 0x3f);   
+  dis[st] = 0;
+  q.push(make_pair(dis[st], st));
+
+  while (!q.empty()) {
+    int d = -q.top().first;
+    int u = q.top().second;
+
+    for (int i = 0; i < edge[u].size(); ++i) {
+      int v = edge[u][i].first;
+      int w = edge[u][i].second;
+      
+      if (dis[v] > d + w) {
+        dis[v] = d + w;
+        q.push(make_pair(-dis[v], v));
+      }
     }
-    heap[p]=r; ps[r]=p; 
-    return  ret ; 
-} 
-
-int dijkstra(int src,int dst) 
-{ 
-    int i,j,u,v; 
-    for(i=1;i<=n;i++) {value[i]=inf;mk[i]=ps[i]=0;} 
-    value[src]=0; heap[len=1]=src; ps[src]=1; 
-    while (!mk[dst]){
-        if(len==0) return 0;
-        u=getmin();  mk[u]=1;
-        for(j=nbs[u];j;j=next[j]){
-               v=ev[j]; 
-               if(!mk[v]&&value[u]+ew[j]<value[v]){
-                   if(ps[v]==0){heap[++len]=v;ps[v]=len;}
-                   value[v]=value[u]+ew[j];   
-                   update(v);
-               }
-        }
-    }
+  }
+  return 0;
 }
 
-int readdata() 
-{
-     int i,u,v,w; 
-     cin>>n>>m; num=0; 
-     for(i=1;i<=n;i++) nbs[i]=0; 
-     while(m--){ 
-         cin>>u>>v>>w; 
-         next[++num]=nbs[u];  nbs[u]=num; 
-         ev[num]=v;  ew[num]=w; 
-     } 
-     dijkstra(1,n);	//  Minimum  Distance  saved  at  value [ 1 . . n]
-     return 0;
-}
 
-int main()
-{
-    
-    return 0;
+int main() {
+#ifndef ONLINE_JUDGE
+  freopen("in.txt", "r", stdin);
+  //freopen("out.txt", "w", stdout);
+#endif
+  
+  return 0;
 }
