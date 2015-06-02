@@ -28,7 +28,7 @@ int Kruskal()
        ret+=ew[p];  
        pnt[find(ev[p])]=find(eu[p]);
     }
-    return  ret ;
+    return ret;
 }
 
 int main()

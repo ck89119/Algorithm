@@ -100,9 +100,10 @@ int main() {
   init();
   for (int i = 1; i <= n; ++i) {
     update(i, a[i]);
-    cout << getsum(i) << endl;
+    //cout << getsum(i) << endl;
   }
-
+  for (int i = 1; i <= n; ++i) 
+    cout << c[i] << endl;
 
   return 0;
 }

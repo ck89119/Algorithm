@@ -19,22 +19,28 @@ const int M = 9999999;
 const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
 
-vector<int> edges[N];
-int in_degree[N];
-
-int topsort() {
-  queue<int> q;
-  for (int i = 0; i < n; ++i)
-    if (in_degree[i] == 0) q.push(i);
-  
-  while (!q.empty()) {
-    int u = q.front(); q.pop();
-    for (int i = 0; i < edges[u].size(); ++i) {
-      int v = edges[u][i];
-      --in_degree[v];
-      if (in_degree[v] == 0) q.push(v);
-    }
+int LIS(int a[], int n) {
+  int top = 0;
+  int b[N];
+  for (int i = 0; i < n; ++i) {
+    int p = lower_bound(b, b + top, a[i]) - b;
+    if (p == top) b[top++] = a[i];
+    else b[p] = a[i];
   }
+  out(b, top);
+  return 0;
+}
+
+
+int LNDS(int a[], int n) {
+  int top = 0;
+  int b[N];
+  for (int i = 0; i < n; ++i) {
+    int p = upper_bound(b, b + top, a[i]) - b;
+    if (p == top) b[top++] = a[i];
+    else b[p] = a[i];
+  }
+  out(b, top);
   return 0;
 }
 
@@ -43,6 +49,8 @@ int main() {
   freopen("in.txt", "r", stdin);
   //freopen("out.txt", "w", stdout);
 #endif
-  
+  int a[5] = {1,6,3,3,5};
+  LIS(a, 5);
+  LNDS(a, 5);
   return 0;
 }
