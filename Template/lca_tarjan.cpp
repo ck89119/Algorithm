@@ -44,7 +44,7 @@ using namespace std;
 
 template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
 template <class T> void out (vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
-const int MAXN=40005;
+const int N=40005;
 const int MAXM=9999999;
 const int INF=0x3f3f3f3f;
 const double PI=acos(-1.0);
@@ -53,12 +53,12 @@ const int CHILD_NUM = 26;
 const int MOD = 1000000007;
 
 typedef pair<int, int> PII;
-vector<PII> edges[MAXN];
-vector<PII> querys[MAXN];
+vector<PII> edges[N];
+vector<PII> querys[N];
 vector<PII> ans;
-int f[MAXN], anc[MAXN];
+int f[N], anc[N];
 int n, m, k;
-int vis[MAXN], length[MAXN];
+int vis[N];
 
 int init_set() {
   for (int i = 1; i <= n; ++i)
@@ -123,12 +123,21 @@ int main() {
     int u, v;
     scanf("%d%d", &u, &v);
     add_query(u, v);
+    ans.push_back(MP(u, v));
   }
   
   init_set();
   for (int i = 1; i <= n; ++i) anc[i] = i;
   CLR(vis, 0);
   dfs(1);
-
+  for (int i = 0; i < ans.size(); ++i) {
+    int u = ans[i].first;
+    int v = ans[i].second;
+    for (int j = 0; j < querys[u].size(); ++j)
+      if (querys[u][j].first == v) {
+        printf("%d\n", querys[u][j].second);
+        break;
+      }
+  }
   return 0;
 }
