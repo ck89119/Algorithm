@@ -1,0 +1,53 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define dump(x) cerr <<  __LINE__ << " : "<< #x << "  =  " << (x) << endl
+#define CLR(a, x) memset(a, x, sizeof(a)) //0:0, -1:-1, INF:0x3f, -INF:0x80
+#define MP(A, B) make_pair(A, B)
+#define PB(A) push_back(A)
+#define lson l, m, rt << 1
+#define rson m + 1, r, rt << 1 | 1
+#define lowbit(x) x & (-x)
+typedef long long LL;
+typedef unsigned long long ULL;
+typedef pair<int, int> PII;
+
+template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+const int N = 1000 + 5;
+const int M = 9999999;
+const int INF = 0x3f3f3f3f;
+const int MOD = 1000000007;
+
+char s[N];
+int k;
+
+int check(int i, int j) {
+  while (i < j) {
+    if (s[i] != s[j]) return 0;
+    ++i; --j;
+  }
+  return 1;
+}
+
+int main() {
+#ifndef ONLINE_JUDGE 
+  freopen("in.txt", "r", stdin);
+  //freopen("out.txt", "w", stdout);
+#endif
+  scanf("%s%d", s, &k);
+  int len = strlen(s);
+  if (len % k) {
+    printf("NO\n");
+    return 0;
+  }
+
+  int l = len / k;
+  int cnt = 0;
+  for (int i = 0; i < len; i += l)
+    if (check(i, i + l - 1)) ++cnt;
+  if (cnt == k) printf("YES\n");
+  else printf("NO\n");
+
+  return 0;
+}

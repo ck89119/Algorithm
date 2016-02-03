@@ -1,4 +1,4 @@
-f :: Int -> [Int] -> [Int]
+f :: b -> [a] -> [a]
 f n [] = []
 f n (x : xs) = take n (repeat x) ++ f n xs
 
