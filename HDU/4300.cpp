@@ -1,25 +1,4 @@
-#include <vector>
-#include <list>
-#include <map>
-#include <set>
-#include <deque>
-#include <queue>
-#include <stack>
-#include <string>
-#include <bitset>
-#include <algorithm>
-#include <functional>
-#include <numeric>
-#include <utility>
-#include <sstream>
-#include <fstream>
-#include <iostream>
-#include <iomanip>
-#include <cstdio>
-#include <cmath>
-#include <cstring>
-#include <cstdlib>
-#include <ctime>
+#include <bits/stdc++.h>
 using namespace std;
 
 #define dump(x) cerr <<  __LINE__ << " : "<< #x << "  =  " << (x) << endl
@@ -36,7 +15,7 @@ typedef pair<int, int> pii;
 
 template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
 template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
-const int N = 100000 + 5;
+const int N = 200000 + 5;
 const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
 
@@ -45,10 +24,10 @@ char a[N], b[N];
 int fail[N];
 // ekmp[i] means the longest common prefix of a[i..] and b
 int ekmp[N];
+char f[30], inv_f[30];
+int la, lb;
 
 int EKMP() {
-  int la = strlen(a);
-  int lb = strlen(b);
   int i, j, p0;
 
   fail[0] = lb;
@@ -58,17 +37,11 @@ int EKMP() {
   
   p0 = 1;
   for (i = 1; i < lb - 1; ++i) {
-    dump(i);
     int len = fail[i-p0+1];
     int p = p0 + fail[p0] - 1;
-    dump(len);
-    dump(p0);
-    dump(p);
     if (len + i < p) {
-      dump("len + i < p");
       fail[i+1] = len;
     } else {
-      dump("len + i >= p");
       j = max(p - i, 0);
       while (i + 1 + j < lb && j < lb) {
         if (b[i+1+j] != b[j]) break;
@@ -78,7 +51,6 @@ int EKMP() {
       p0 = i + 1;
     }
   }
-  out(fail, lb);
   
   for (i = 0, j = 0; i < la && j < lb; ++i, ++j)
     if (a[i] != b[j]) break;
@@ -86,17 +58,11 @@ int EKMP() {
   
   p0 = 0;
   for (int i = 0; i < la - 1; ++i) {
-    dump(i);
     int len = fail[i-p0+1];
     int p = p0 + ekmp[p0] - 1;
-    dump(len);
-    dump(p0);
-    dump(p);
     if (len + i < p) {
-      dump("len + i < p");
       ekmp[i+1] = len;
     } else {
-      dump("len + i >= p");
       j = max(p - i, 0);
       while (i + 1 + j < la && j < lb) {
         if (a[i+1+j] != b[j]) break;
@@ -106,7 +72,6 @@ int EKMP() {
       p0 = i + 1;
     }
   }
-  out(ekmp, la);
   return 0;
 }
 
@@ -115,8 +80,30 @@ int main() {
   freopen("in.txt", "r", stdin);
   //freopen("out.txt", "w", stdout);
 #endif
-  scanf("%s", a);
-  scanf("%s", b);
-  EKMP();
+  int ncase;
+  scanf("%d", &ncase);
+  while (ncase--) {
+    scanf("%s", f);
+    for (int i = 0; i < 26; ++i)
+      inv_f[f[i]-'a'] = 'a' + i;
+
+    scanf("%s", b);
+    la = lb = strlen(b);
+    for (int i = 0; i < lb; ++i)
+      a[i] = f[b[i] - 'a'];
+    a[la] = '\0';
+    EKMP();
+  
+    int l = 0;
+    for (int i = la - la / 2; i < la; ++i)
+      if (i + ekmp[i] == la)
+        l = max(l, ekmp[i]);
+    l = la - l;
+
+    for (int i = 0; i < l; ++i)
+      b[i+l] = inv_f[b[i]-'a'];
+    b[2*l] = '\0';
+    printf("%s\n", b);
+  }
   return 0;
 }

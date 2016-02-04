@@ -1,25 +1,4 @@
-#include <vector>
-#include <list>
-#include <map>
-#include <set>
-#include <deque>
-#include <queue>
-#include <stack>
-#include <string>
-#include <bitset>
-#include <algorithm>
-#include <functional>
-#include <numeric>
-#include <utility>
-#include <sstream>
-#include <fstream>
-#include <iostream>
-#include <iomanip>
-#include <cstdio>
-#include <cmath>
-#include <cstring>
-#include <cstdlib>
-#include <ctime>
+#include <bits/stdc++.h>
 using namespace std;
 
 #define dump(x) cerr <<  __LINE__ << " : "<< #x << "  =  " << (x) << endl
@@ -36,7 +15,7 @@ typedef pair<int, int> pii;
 
 template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
 template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
-const int N = 100000 + 5;
+const int N = 200000 + 5;
 const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
 
@@ -46,77 +25,40 @@ int fail[N];
 // ekmp[i] means the longest common prefix of a[i..] and b
 int ekmp[N];
 
-int EKMP() {
+int EKMP(char a[N], char b[N]) {
   int la = strlen(a);
   int lb = strlen(b);
-  int i, j, p0;
-
-  fail[0] = lb;
-  for (j = 0; j + 1 < lb; ++j)
-    if (b[j] != b[j+1]) break;
-  fail[1] = j;
-  
-  p0 = 1;
-  for (i = 1; i < lb - 1; ++i) {
-    dump(i);
-    int len = fail[i-p0+1];
-    int p = p0 + fail[p0] - 1;
-    dump(len);
-    dump(p0);
-    dump(p);
-    if (len + i < p) {
-      dump("len + i < p");
-      fail[i+1] = len;
+  int j, k;
+  for (j = 0; j + 1 < lb && b[j] == b[j+1]; ++j) {}
+  fail[0] = lb; fail[1] = j;
+  k = 1;
+  for (int i = 2; i < lb; ++i) {
+    int p = k + fail[k] - 1;
+    int q = fail[i-k];
+    if (p - i + 1 > q) {
+      fail[i] = q;
     } else {
-      dump("len + i >= p");
-      j = max(p - i, 0);
-      while (i + 1 + j < lb && j < lb) {
-        if (b[i+1+j] != b[j]) break;
-        ++j;
-      }
-      fail[i+1] = j;
-      p0 = i + 1;
+      j = max(0, p - i + 1);
+      while (j < lb && b[i+j] == b[j]) ++j;
+      fail[k = i] = j;
     }
   }
-  out(fail, lb);
-  
-  for (i = 0, j = 0; i < la && j < lb; ++i, ++j)
-    if (a[i] != b[j]) break;
-  ekmp[0] = i;
-  
-  p0 = 0;
-  for (int i = 0; i < la - 1; ++i) {
-    dump(i);
-    int len = fail[i-p0+1];
-    int p = p0 + ekmp[p0] - 1;
-    dump(len);
-    dump(p0);
-    dump(p);
-    if (len + i < p) {
-      dump("len + i < p");
-      ekmp[i+1] = len;
+  //out(fail, lb);
+ 
+  for (j = 0; j < la && j < lb && a[j] == b[j]; ++j) {}
+  ekmp[0] = j;
+  k = 0;
+  for (int i = 1; i < la; ++i) {
+    int p = k + ekmp[k] - 1;
+    int q = fail[i-k];
+    if (p - i + 1 > q) {
+      ekmp[i] = q;
     } else {
-      dump("len + i >= p");
-      j = max(p - i, 0);
-      while (i + 1 + j < la && j < lb) {
-        if (a[i+1+j] != b[j]) break;
-        ++j;
-      }
-      ekmp[i+1] = j;
-      p0 = i + 1;
+      j = max(0, p - i + 1);
+      while (i + j < la && j < lb && a[i+j] == b[j]) ++j;
+      ekmp[k = i] = j;
     }
   }
-  out(ekmp, la);
-  return 0;
-}
-
-int main() {
-#ifndef ONLINE_JUDGE
-  freopen("in.txt", "r", stdin);
-  //freopen("out.txt", "w", stdout);
-#endif
-  scanf("%s", a);
-  scanf("%s", b);
-  EKMP();
+  //out(ekmp, la);
   return 0;
 }
