@@ -39,12 +39,12 @@ int EKMP(char a[N], char b[N]) {
       fail[i] = q;
     } else {
       j = max(0, p - i + 1);
-      while (j < lb && b[i+j] == b[j]) ++j;
+      while (i + j < lb && b[i+j] == b[j]) ++j;
       fail[k = i] = j;
     }
   }
   //out(fail, lb);
- 
+
   for (j = 0; j < la && j < lb && a[j] == b[j]; ++j) {}
   ekmp[0] = j;
   k = 0;
