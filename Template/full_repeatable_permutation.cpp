@@ -81,6 +81,7 @@ int main() {
   cin >> n;
   for (int i = 0; i < n; ++i)
     cin >> a[i];
+  sort(a, a+n);
   recur(0, p);
   return 0;
 }

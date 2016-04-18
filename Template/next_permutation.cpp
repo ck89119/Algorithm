@@ -54,7 +54,10 @@ int nextPermutation(int a[n]) {
             return 0;
         }
     }
-    rev(a, 0, n);
+    //for (int i = 0; i < 5; i++)
+        //cout << a[i] << ' ';
+    //cout << endl;
+    //rev(a, 0, n);
     return 0;
 }
 
@@ -63,5 +66,6 @@ int main(){
     nextPermutation(a);
     for (int i = 0; i < 5; i++)
         cout << a[i] << ' ';
+    cout << endl;
     return 0;
 }

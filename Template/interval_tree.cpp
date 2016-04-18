@@ -111,20 +111,20 @@ LL query(int L, int R, int l, int r, int rt) {
 }
 
 int main() {
-	int N, Q;
-	scanf("%d%d",&N,&Q);
-	build(1, N, 1);
-	while (Q--) {
-		char op[2];
-		int a, b, c;
-		scanf("%s", op);
-		if (op[0] == 'Q') {
-			scanf("%d%d", &a, &b);
-			printf("%lld\n", query(a, b, 1, N, 1));
-		} else {
-			scanf("%d%d%d", &a, &b, &c);
-			update(a, b, c, 1, N, 1);
-		}
-	}
-	return 0;
+  int N, Q;
+  scanf("%d%d",&N,&Q);
+  build(1, N, 1);
+  while (Q--) {
+    char op[2];
+    int a, b, c;
+    scanf("%s", op);
+    if (op[0] == 'Q') {
+      scanf("%d%d", &a, &b);
+      printf("%lld\n", query(a, b, 1, N, 1));
+    } else {
+      scanf("%d%d%d", &a, &b, &c);
+      update(a, b, c, 1, N, 1);
+    }
+  }
+  return 0;
 }
