@@ -67,7 +67,7 @@ int update(int pos, int x) {
   return 0;
 }
 
-int getsum(int pos) {
+int get_sum(int pos) {
   int ans = 0;
   while (pos > 0) {
     ans += c[pos];
@@ -100,7 +100,7 @@ int main() {
   init();
   for (int i = 1; i <= n; ++i) {
     update(i, a[i]);
-    //cout << getsum(i) << endl;
+    //cout << get_sum(i) << endl;
   }
   for (int i = 1; i <= n; ++i) 
     cout << c[i] << endl;
