@@ -10,3 +10,7 @@ ProjectEuler/
 Ural/
 VOJ/
 tmp/
+*.in
+*.out
+in.txt
+out.txt
