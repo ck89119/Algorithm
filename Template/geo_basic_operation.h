@@ -1,30 +1,60 @@
-const double eps = 1e−8;
-const double pi	= acos(-1.0);
-struct CPoint{double x,y;};
-struct Edge{CPoint p1,p2;};
-double sqr(double x) {return x*x;}
-int dcmp(double x) {if (x<-eps) return -1;else return (x>eps);}
-//cross product
-double cross(CPoint p0, CPoint p1, CPoint p2) {
-    return (p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y);
+#include <bits/stdc++.h>
+using namespace std;
+
+#define dump(x) cerr <<  __LINE__ << " : "<< #x << "  =  " << (x) << endl
+#define clr(a, x) memset(a, x, sizeof(a)) //0:0, -1:-1, INF:0x3f, -INF:0x80
+#define mp(a, b) make_pair(a, b)
+#define pb(a) push_back(a)
+#define lson l, m, rt << 1
+#define rson m + 1, r, rt << 1 | 1
+#define lowbit(x) x & (-x)
+#define X first 
+#define Y second
+typedef long long ll;
+typedef pair<int, int> pii;
+
+template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+const int N = 100000 + 5;
+const int INF = 0x3f3f3f3f;
+const int MOD = 1000000007;
+const double EPS = 1e-11;
+const double PI	= acos(-1.0);
+
+struct Point {
+  double x,y;
+  Point(double _x, double _y): x(_x), y(_y) {};
+};
+
+struct Edge {
+  Point p1, p2;
+  Edge(const Point& _p1, const Point& _p2): p1(_p1), p2(_p2) {};
+};
+
+double sqr(double x) { return x * x; }
+int dcmp(double x) { return x < -EPS ? -1 : (x > EPS); }
+
+//cross product: p0p1 * p0p2
+double Cross(const Point& p0, const Point& p1, const Point& p2) {
+  return (p1.x - p0.x) * (p2.y - p0.y) - (p2.x - p0.x) * (p1.y - p0.y);
 }
 
-//dot product
-double dot(CPoint p0, CPoint p1, CPoint p2) {
-    return (p1.x-p0.x)*(p2.x-p0.x)+(p1.y-p0.y)*(p2.y-p0.y);
+//dot product: p0p1 . p0p2
+double Dot(const Point& p0, const Point& p1, const Point& p2) {
+    return (p1.x - p0.x) * (p2.x - p0.x) + (p1.y - p0.y) * (p2.y - p0.y);
 }
 
 //distance square
-double disSqr(CPoint p1, CPoint p2) {
-    return sqr(p1.x-p2.x)+sqr(p1.y-p2.y);
+double Dis_sqr(const Point& p1, const Point& p2) {
+    return sqr(p1.x - p2.x) + sqr(p1.y - p2.y);
 }
 
 //distance
-double dis(CPoint p1, CPoint p2) {
-    return sqrt(sqr(p1.x-p2.x)+sqr(p1.y-p2.y));
+double Dis(const Point& p1, const Point& p2) {
+    return sqrt(sqr(p1.x - p2.x) + sqr(p1.y - p2.y));
 }
 
-int PointEqual(const CPoint &p1, const CPoint &p2) {
+int PointEqual(const Point& p1, const Point& p2) {
     return (dcmp(p1.x−p2.x) == 0) && (dcmp(p1.y−p2.y) == 0);
 }
 
@@ -115,3 +145,13 @@ int PointProjLine(CPoint p0,CPoint p1,CPoint p2,CPoint &cp) {
     cp.y=p1.y+t*(p2.y-p1.y);
     return 0;
 }
+
+int main() {
+#ifndef ONLINE_JUDGE
+  freopen("in.txt", "r", stdin);
+  //freopen("out.txt", "w", stdout);
+#endif
+  
+  return 0;
+}
+
