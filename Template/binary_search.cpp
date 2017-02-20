@@ -52,14 +52,32 @@ const double EPS=1e-11;
 const int CHILD_NUM = 26;
 const int MOD = 1000000007;
 
-int binary_search_upper_bound(int arr[], int left, int right, int t) {   //(left, right]
+int binary_search_lower_bound(int arr[], int left, int right, int t) {   //[left, right)
   while (left < right) {
-    int mid = (left + right + 1) >> 1;
-    if (arr[mid] <= t) left = mid;
-    else right = mid - 1;
+    int mid = (left + right) >> 1;
+    if (arr[mid] >= t) right = mid;
+    else left = mid + 1;
   }
   return right;
 }
+
+int binary_search_upper_bound(int arr[], int left, int right, int t) {   //[left, right)
+  while (left < right) {
+    int mid = (left + right) >> 1;
+    if (arr[mid] > t) right = mid;
+    else left = mid + 1;
+  }
+  return right;
+}
+
+// int binary_search_upper_bound(int arr[], int left, int right, int t) {   //(left, right]
+//   while (left < right) {
+//     int mid = (left + right + 1) >> 1;
+//     if (arr[mid] <= t) left = mid;
+//     else right = mid - 1;
+//   }
+//   return right;
+// }
 
 int binary_search_upper_bound_1(int arr[], int left, int right, int t) {  //[left, right)
   if (arr[left] > t) return left - 1;
@@ -68,15 +86,6 @@ int binary_search_upper_bound_1(int arr[], int left, int right, int t) {  //[lef
   for (int i = p; i > 0; i >>= 1) {
     int j = left + i;
     if (j < right && arr[j] <= t) left = j;
-  }
-  return left;
-}
-
-int binary_search_lower_bound(int arr[], int left, int right, int t) {   //[left, right)
-  while (left < right) {
-    int mid = (left + right) >> 1;
-    if (arr[mid] >= t) right = mid;
-    else left = mid + 1;
   }
   return left;
 }
@@ -108,10 +117,8 @@ int main() {
   int target;
   while (cin >> target) {
     //cout << binary_search(arr, 0, 5, target) << endl; 
-    //cout << binary_search_lower_bound(arr, 0, 5, target) << endl; 
-    //cout << binary_search_lower_bound_1(arr, -1, 4, target) << endl; 
-    cout << binary_search_upper_bound(arr, -1, 4, target) << endl; 
-    cout << binary_search_upper_bound_1(arr, 0, 5, target) << endl; 
+    cout << binary_search_lower_bound(arr, 0, 5, target) << endl; 
+    cout << binary_search_upper_bound(arr, 0, 5, target) << endl; 
   }
   return 0;
 }

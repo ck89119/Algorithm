@@ -50,14 +50,14 @@ struct EdgeNode {
     int to;
     int w;
     int next;
-}edges[MAXM];
+} edges[MAXM];
 int head[MAXN];
 int dfn[MAXN];
 int low[MAXN];
 int idx, edgesSize, cnt;
 stack<int> s;
-int inStack[MAXN];
-int belong[MAXN];
+int in_stack[MAXN];
+int group_number[MAXN];
 int m, n;
 
 int init() {
@@ -67,7 +67,7 @@ int init() {
     idx = 0;
     edgesSize = 0;
     while (!s.empty()) s.pop();
-    CLR(inStack, 0);
+    CLR(in_stack, 0);
     cnt = 0;
     return 0;
 }
@@ -95,13 +95,13 @@ int tarjan(int v) {
     int i;
     dfn[v] = low[v] = idx++;
     s.push(v);
-    inStack[v] = 1;
+    in_stack[v] = 1;
     for (i = head[v]; i != -1; i = edges[i].next) {
         int u = edges[i].to;
         if (dfn[u] == -1) {
             tarjan(u);
             low[v] = min(low[v], low[u]);
-        } else if (inStack[u]) {
+        } else if (in_stack[u]) {
             low[v] = min(low[v], dfn[u]);
         }
     }
@@ -111,8 +111,8 @@ int tarjan(int v) {
         cnt++;
         do {
             u = s.top(); s.pop();
-            inStack[u] = 0;
-            belong[u] = cnt;
+            in_stack[u] = 0;
+            group_number[u] = cnt;
         } while (u != v);
         //cout << v << endl;
     }

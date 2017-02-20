@@ -1,75 +1,49 @@
-/*
-ID: ck89119
-PROG:
-LANG: C++
-*/
-#include <vector>
-#include <list>
-#include <map>
-#include <set>
-#include <deque>
-#include <queue>
-#include <stack>
-#include <string>
-#include <bitset>
-#include <algorithm>
-#include <functional>
-#include <numeric>
-#include <utility>
-#include <sstream>
-#include <fstream>
-#include <iostream>
-#include <iomanip>
-#include <cstdio>
-#include <cmath>
-#include <cstring>
-#include <cstdlib>
+#include <bits/stdc++.h>
 using namespace std;
-#define dump(x) cerr <<  __LINE__ << " : "<< #x << "  =  " << (x) <<endl
-#define FR(i,a,b) for(int i=(a);i<(b);++i)//[a,b)
-#define CLR(a,x) memset(a,x,sizeof(a)) //0:0, -1:-1, INF:0x3f, -INF:0x80
-#define MP(A,B) make_pair(A,B)
-#define PB(A) push_back(A)
-#define PAU system("pause")
+
+#define dump(x) cerr <<  __LINE__ << " : "<< #x << "  =  " << (x) << endl
+#define clr(a, x) memset(a, x, sizeof(a)) //0:0, -1:-1, INF:0x3f, -INF:0x80
+#define mp(a, b) make_pair(a, b)
+#define pb(a) push_back(a)
 #define lson l, m, rt << 1
 #define rson m + 1, r, rt << 1 | 1
-#define lowbit(n) (n^(n-1))&n
-#define fin freopen(".in","r",stdin)
-#define fout freopen(".out","w",stdout)
-//ifstream fin("");
-//ofstream fout("");
-#define LL long long
+#define lowbit(x) x & (-x)
+#define X first 
+#define Y second
+typedef long long ll;
+typedef pair<int, int> pii;
 
 template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
-template <class T> void out (vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
-const int MAXN = 500000 + 5;
-const int MAXM=9999999;
-const int INF=0x3f3f3f3f;
-const double PI=acos(-1.0);
-const double EPS=1e-11;
+template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+const int N = 100000 + 5;
+const int INF = 0x3f3f3f3f;
+const int MOD = 1000000007;
+const double PI= acos(-1.0);
+const double EPS= 1e-11;
 const int CHILD_NUM = 26;
 
-struct Ac_automaton {
-  int next[MAXN][CHILD_NUM], fail[MAXN];
-  int end[MAXN];
+struct AC_automaton {
+  int next[N][CHILD_NUM], fail[N];
+  int end[N];
   int size, root;
-  int newNode() {
-    CLR(next[size], -1);
+
+  int NewNode() {
+    clr(next[size], -1);
     end[size] = 0;
     return size++;
   }
   
-  int init() {
+  int Init() {
     size = 0;
-    root = newNode();
+    root = NewNode();
     return 0;
   }
 
-  int insert(char *s) {
+  int Insert(char *s) {
     int cur = root;
     while (*s) {
       if (next[cur][*s-'a'] == -1) {
-        next[cur][*s-'a'] = newNode();
+        next[cur][*s-'a'] = NewNode();
       }
       cur = next[cur][*s-'a'];
       ++s;
@@ -79,7 +53,7 @@ struct Ac_automaton {
     return 0;
   }
 
-  int build() {
+  int Build() {
     queue<int> q;
     fail[root] = root;
     for (int i = 0; i < CHILD_NUM; ++i)
@@ -132,23 +106,21 @@ struct Ac_automaton {
     return 0;
   }
 };
-Ac_automaton ac;
+AC_automaton ac;
 
 int main() {
-  //fin; fout;
-  
   int T;
   scanf("%d", &T);
   while (T--) {
-    ac.init();
+    ac.Init();
     int n;
     scanf("%d", &n);
     for (int i = 0; i < n; ++i) {
       char s[55];
       scanf("%s", s);
-      ac.insert(s);
+      ac.Insert(s);
     }
-    ac.build();
+    ac.Build();
     //ac.debug();
     char str[1000005];
     scanf("%s", str);

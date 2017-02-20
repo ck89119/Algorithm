@@ -2,7 +2,9 @@
 
 class Complex {
  public:
-  Complex() {};
+  double real_, image_;
+
+  Complex(): real_(0.0), image_(0.0) {};
   Complex(double real, double image): real_(real), image_(image) {};
   Complex operator + (const Complex& a);
   Complex operator - (const Complex& a);
@@ -12,10 +14,6 @@ class Complex {
     out << a.real_ << " + " << a.image_ << "i";
     return out;
   }
-
- private:
-  double real_, image_;
-  
 };
 
 Complex Complex::operator + (const Complex& a) {

@@ -96,30 +96,30 @@ int match() {
 }
 
 /* Augmenting path algorithm */
-//int dfs(int u) {
-  //for (int i = 0; i < edge[u].size(); ++i) {
-    //int v = edge[u][i];
-    //if (!visit[v]) {
-      //visit[v] = 1;
-      //if (py[v] == -1 || dfs(py[v])) {
-        //px[u] = v;
-        //py[v] = u;
-        //return 1;
-      //}
-    //}
-  //}
-  //return 0;
-//}
+int dfs(int u) {
+  for (int i = 0; i < edge[u].size(); ++i) {
+    int v = edge[u][i];
+    if (!visit[v]) {
+      visit[v] = 1;
+      if (py[v] == -1 || dfs(py[v])) {
+        px[u] = v;
+        py[v] = u;
+        return 1;
+      }
+    }
+  }
+  return 0;
+}
 
-//int match() {
-  //int cnt = 0;
-  //CLR(px, -1); CLR(py, -1);
-  //for (int i = 1; i <= p; ++i) {
-    //CLR(visit, 0);
-    //if (px[i] == -1) cnt += dfs(i);
-  //}
-  //return cnt;
-//} 
+int match() {
+  int cnt = 0;
+  CLR(px, -1); CLR(py, -1);
+  for (int i = 1; i <= p; ++i) {
+    CLR(visit, 0);
+    if (px[i] == -1) cnt += dfs(i);
+  }
+  return cnt;
+} 
 
 
 int main() {
