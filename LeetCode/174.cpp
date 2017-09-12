@@ -23,17 +23,26 @@ class Solution {
  public:
   int calculateMinimumHP(vector<vector<int>>& dungeon) {
     int n = dungeon.size();
+    if (n == 0) return 0;
     int m = dungeon[0].size();
-    int minimal[n][m][2];
+    if (m == 0) return 0;
     
-    minimal[0][0][0] = minimal[0][0][1] = make_pair(dungeon[0][0], dungeon[0][0]);
-    for (int i = 0; i < n; ++i) {
-      pair<int, int> tmp = minimal[i-1][0][0];
-      minimal[i][0][0] = 
+    int f[n][m];
+    f[n-1][m-1] = max(1, 1 - dungeon[n-1][m-1]);
+    for (int i = n-2; i >= 0; --i) {
+      f[i][m-1] = f[i+1][m-1] - dungeon[i][m-1];
+      f[i][m-1] = max(f[i][m-1], 1); 
     }
-
-
-
+    for (int j = m-2; j >= 0; --j) {
+      f[n-1][j] = f[n-1][j+1] - dungeon[n-1][j];
+      f[n-1][j] = max(f[n-1][j], 1);
+    }
+    for (int i = n-2; i >= 0; --i)
+      for (int j = m-2; j >= 0; --j) {
+        f[i][j] = min(f[i+1][j], f[i][j+1]) - dungeon[i][j];
+        f[i][j] = max(f[i][j], 1);
+      }
+    return f[0][0];
   }
 };
 

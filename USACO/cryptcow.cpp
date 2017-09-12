@@ -45,10 +45,7 @@ const double PI=acos(-1.0);
 const double EPS=1e-11;
 typedef char STR[MAXB];
 
-
-
 int elfhash(char * str) {
-
 	unsigned int res = 0,g;
 	while (*str)
 	{
@@ -69,7 +66,7 @@ inline void swap(int pos1,int pos2,int pos3,char *str,char *tmp) {
 	memmove(ptr,str + pos2 + 1,pos3 - pos2 - 1);
 	ptr += pos3 - pos2 - 1;
 	memmove(ptr,str + pos1 + 1,pos2 - pos1 - 1);
-	ptr += pos2 - pos1 - 1;
+	atr += pos2 - pos1 - 1;
 	memmove(ptr,str + pos3 + 1,len - pos3 - 1);
 	tmp[len - 3] = 0;
 }

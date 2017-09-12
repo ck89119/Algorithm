@@ -1,104 +1,84 @@
-#include <algorithm>
-#include <iostream>
-#include <vector>
-#include <math.h>
+#include <bits/stdc++.h>
 using namespace std;
-//二维点(或向量)结构体定义
-#ifndef _WINDEF_
-struct POINT { int x; int y; };
-#endif
-typedef vector<POINT> PTARRAY;
-//判断两个点(或向量)是否相等
-bool operator==(const POINT &pt1, const POINT &pt2) {
-    return (pt1.x == pt2.x && pt1.y == pt2.y);
-}
-	// 比较向量中哪个与x轴向量(1, 0)的夹角更大
-bool CompareVector(const POINT &pt1, const POINT &pt2) {
-	    //求向量的模
-    float m1 = sqrt((float)(pt1.x * pt1.x + pt1.y * pt1.y));
-    float m2 = sqrt((float)(pt2.x * pt2.x + pt2.y * pt2.y));
-	    //两个向量分别与(1, 0)求内积
-    float v1 = pt1.x / m1, v2 = pt2.x / m2;
-	    //如果向量夹角相等，则返回离基点较近的一个，保证有序
-    return (v1 > v2 || v1 == v2 && m1 < m2);
-}
-	//计算凸包
-int CalcConvexHull(PTARRAY &vecSrc) {
-	    //点集中至少应有3个点，才能构成多边形
-    if (vecSrc.size() < 3) {
-	        return 0;
-    }
-	    //查找基点
-    POINT ptBase = vecSrc.front(); //将第1个点预设为最小点
-    for (PTARRAY::iterator i = vecSrc.begin() + 1; i != vecSrc.end(); ++i) {
-	        //如果当前点的y值小于最小点，或y值相等，x值较小
-        if (i->y < ptBase.y || (i->y == ptBase.y && i->x > ptBase.x)) {
-	            //将当前点作为最小点
-        ptBase = *i;
-        }
-    }
-	    //计算出各点与基点构成的向量
-    for (PTARRAY::iterator i = vecSrc.begin(); i != vecSrc.end();) {
-	        //排除与基点相同的点，避免后面的排序计算中出现除0错误
-        if (*i == ptBase) {
-            i = vecSrc.erase(i);
-        }
-        else {
-	            //方向由基点到目标点
-            i->x -= ptBase.x, i->y -= ptBase.y;
-            ++i;
-        }
-    }
-	    //按各向量与横坐标之间的夹角排序
-    sort(vecSrc.begin(), vecSrc.end(), &CompareVector);
-	    //删除相同的向量
-    vecSrc.erase(unique(vecSrc.begin(), vecSrc.end()), vecSrc.end());
-	    //计算得到首尾依次相联的向量
-    for (PTARRAY::reverse_iterator ri = vecSrc.rbegin();
-    ri != vecSrc.rend() - 1; ++ri) {
-        PTARRAY::reverse_iterator riNext = ri + 1;
-	        //向量三角形计算公式
-        ri->x -= riNext->x, ri->y -= riNext->y;
-    }
-	    //依次删除不在凸包上的向量
-    for (PTARRAY::iterator i = vecSrc.begin() + 1; i != vecSrc.end(); ++i) {
-	        //回溯删除旋转方向相反的向量，使用外积判断旋转方向
-        for (PTARRAY::iterator iLast = i - 1; iLast != vecSrc.begin();) {
-            int v1 = i->x * iLast->y, v2 = i->y * iLast->x;
-	            //如果叉积小于0，则无没有逆向旋转
-	            //如果叉积等于0，还需判断方向是否相逆
-            if (v1 < v2 || (v1 == v2 && i->x * iLast->x > 0 &&i->y * iLast->y > 0)) {
-	                    break;
-            }
-	            //删除前一个向量后，需更新当前向量，与前面的向量首尾相连
-	            //向量三角形计算公式
-            i->x += iLast->x, i->y += iLast->y;
-            iLast = (i = vecSrc.erase(iLast)) - 1;
-        }
-    }
-	    //将所有首尾相连的向量依次累加，换算成坐标
-    vecSrc.front().x += ptBase.x, vecSrc.front().y += ptBase.y;
-    for (PTARRAY::iterator i = vecSrc.begin() + 1; i != vecSrc.end(); ++i) {
-        i->x += (i - 1)->x, i->y += (i - 1)->y;
-    }
-	    //添加基点，全部的凸包计算完成
-    vecSrc.push_back(ptBase);
-    return 0;
-}
-	 
-int main() {
-    int nPtCnt = 100; //生成的随机点数
-    PTARRAY vecSrc;
-    for (int i = 0; i < nPtCnt; ++i) {
-         POINT ptIn = { rand() % 20, rand() % 20 };
-         vecSrc.push_back(ptIn);
-         cout << ptIn.x << ", " << ptIn.y << endl;
-    }
-    CalcConvexHull(vecSrc);
-    cout << "\nConvex Hull:\n";
-    for (PTARRAY::iterator i = vecSrc.begin(); i != vecSrc.end(); ++i) {
-         cout << i->x << ", " << i->y << endl;
-    }
-    system("pause");
-    return 0;
-}
+
+#define dump(x) cout <<  __LINE__ << " : "<< #x << "  =  " << (x) << endl
+#define clr(a, x) memset(a, x, sizeof(a)) //0:0, -1:-1, INF:0x3f, -INF:0xc0
+#define mp(a, b) make_pair(a, b)
+#define pb(a) push_back(a)
+#define lowbit(x) x & (-x)
+typedef long long ll;
+typedef pair<int, int> pii;
+
+template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+const int N = 100000 + 5;
+const int INF = 0x3f3f3f3f;
+const int MOD = 1000000007;
+const double eps=1e-10;  
+
+int dcmp(double x)  
+{  
+    if(fabs(x)<eps) return 0;  
+    return x<0?-1:1;  
+}  
+struct Point  
+{  
+    double x,y;  
+    Point(){}  
+    Point(double x,double y):x(x),y(y){}  
+    bool operator==(const Point& rhs)const  
+    {  
+        return dcmp(x-rhs.x)==0 && dcmp(y-rhs.y)==0;  
+    }  
+    bool operator<(const Point& rhs)const  
+    {  
+        return dcmp(x-rhs.x)<0 || (dcmp(x-rhs.x)==0 && dcmp(y-rhs.y)<0);  
+    }  
+};  
+typedef Point Vector;  
+Vector operator-(Point A,Point B)  
+{  
+    return Vector(A.x-B.x,A.y-B.y);  
+}  
+double Cross(Vector A,Vector B)  
+{  
+    return A.x*B.y-A.y*B.x;  
+}  
+int ConvexHull(Point *p,int n,Point *ch)//求凸包  
+{  
+    sort(p,p+n);  
+    n=unique(p,p+n)-p;  
+    int m=0;  
+    for(int i=0;i<n;i++)  
+    {  
+        while(m>1 && Cross(ch[m-1]-ch[m-2], p[i]-ch[m-2])<0) m--;  
+        ch[m++]=p[i];  
+    }  
+    int k=m;  
+    for(int i=n-2;i>=0;i--)  
+    {  
+        while(m>k && Cross(ch[m-1]-ch[m-2], p[i]-ch[m-2])<0) m--;  
+        ch[m++]=p[i];  
+    }  
+    if(n>1) m--;  
+    return m;  
+}  
+  
+const int maxn=100000+10;  
+Point p[maxn],ch[maxn];  
+int main()  
+{  
+    int T; scanf("%d",&T);  
+    while(T--)  
+    {  
+        int n;  
+        scanf("%d",&n);  
+        for(int i=0;i<n;i++)  
+            scanf("%lf%lf %*c",&p[i].x,&p[i].y);  
+        int m=ConvexHull(p,n,ch);  
+        printf("%d\n",m);  
+        for(int i=0;i<m;i++)  
+            printf("%.0lf %.0lf\n",ch[i].x,ch[i].y);  
+    }  
+    return 0;  
+}  

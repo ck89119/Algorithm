@@ -122,3 +122,22 @@ typedef unsigned long long uint64;
 #define towL(X) (((int64)(1))<<(x))
 #define contain(S,X) ((S&two(X))>0)
 #define containL(S,X) ((S&twoL(X))>0)
+
+vector<string> split(const string &s, char delim) {
+  vector<string> ans;
+  stringstream ss;
+  ss.str(s);
+  string item;
+  while (getline(ss, item, delim)) {
+    ans.push_back(item);
+  }
+  return ans;
+}
+
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, std::back_inserter(elems));
+    return elems;
+}
+

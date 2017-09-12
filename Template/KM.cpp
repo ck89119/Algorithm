@@ -30,7 +30,7 @@ int dfs(int u) {
   visit_x[u] = true;
   for (int v = 0; v < n; ++v)
     if (!visit_y[v]){
-      int t = l_x[u] + l_y[v] == g[u][v];
+      int t = l_x[u] + l_y[v] - g[u][v];
       if (t == 0) {
         visit_y[v] = true;
         if (match[v] == -1 || dfs(match[v])) {
@@ -67,7 +67,7 @@ int km(int op) {
       
       int inc = INF;
       for (int i = 0; i < n; ++i)
-        inc = min(inc, slack[i]);
+        if (!visit_y[i]) inc = min(inc, slack[i]);
 
       for (int i = 0; i < n; ++i) {
         if (visit_x[i]) l_x[i] -= inc;
@@ -87,18 +87,10 @@ int main() {
   freopen("in.txt", "r", stdin);
   freopen("out.txt", "w", stdout);
 #endif
-  scanf("%d", &n);
-  clr(g, 0);
-  for (int i = 0; i < n; ++i) 
-    for (int j = 0; j < n; ++j) {
-      int t;
-      scanf("%d", &t);
-      for (int k = 0; k < n; ++k)
-        if (k != i)
-          g[k][j] += t;
-    }
-  // for (int i = 0; i < n; ++i)
-  //   out(g[i], n);
-  printf("%d\n", km(-1));
+  n = 23;
+  for (int i = 0; i < n; ++i)
+    for (int j = 0; j < n; ++j)
+      scanf("%d", &g[i][j]);
+  km(-1);
   return 0;
 }

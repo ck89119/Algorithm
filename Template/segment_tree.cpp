@@ -19,7 +19,57 @@ const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
 
 int n, h;
-int t[N<<1], d[N]; 
+int t[N<<1], d[N];
+double x[N];
+
+struct SegmentTree {
+  int n, h;
+  int t[N<<1];
+  double cover[N<<1];
+
+  SegmentTree(int _n): n(_n) {
+    h = 0;
+    _n = 2 * _n - 1;
+    while (_n > 0) _n >>= 1, ++h;
+  }
+  
+  int apply(int p, int v) {
+    t[p] += v;
+    if (p > n) cover[p] = t[p] > 0 ? x[p-n+1] - x[p-n] : 0.0;
+    return 0; 
+  } 
+  
+  int push(int l, int r) {
+    int s = h;
+    for (l += n, r += n-1; s > 0; --s)
+      for (int i = (l >> s); i <= (r >> s); ++i)
+        if (t[i]) {
+          apply(i<<1, t[i]);
+          apply(i<<1|1, t[i]);
+          t[i] = 0;
+        } 
+    return 0;
+  }
+  
+  int build(int l, int r) {
+    l += n, r += n-1;
+    for (l >>= 1, r >>= 1; l > 0; l >>= 1, r >>= 1)
+      for (int i = r; i >= l; --i)
+        cover[i] = cover[i<<1] + cover[i<<1|1];
+    return 0;
+  }
+
+  int update(int l, int r, int v) {
+    int tl = l, tr = r;
+    for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
+      if (l & 1) apply(l++, v);
+      if (r & 1) apply(--r, v);
+    }
+    push(tl, tr), build(tl, tr);
+    return 0;
+  }
+};
+
 
 // Single element modifications
 // int build() {
