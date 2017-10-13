@@ -87,10 +87,18 @@ int main() {
   freopen("in.txt", "r", stdin);
   freopen("out.txt", "w", stdout);
 #endif
-  n = 23;
-  for (int i = 0; i < n; ++i)
-    for (int j = 0; j < n; ++j)
-      scanf("%d", &g[i][j]);
-  km(-1);
+  scanf("%d", &n);
+  clr(g, 0);
+  for (int i = 0; i < n; ++i) 
+    for (int j = 0; j < n; ++j) {
+      int t;
+      scanf("%d", &t);
+      for (int k = 0; k < n; ++k)
+        if (k != i)
+          g[k][j] += t;
+    }
+  // for (int i = 0; i < n; ++i)
+  //   out(g[i], n);
+  printf("%d\n", km(-1));
   return 0;
 }
