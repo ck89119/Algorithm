@@ -18,36 +18,30 @@ const int MOD = 1000000007;
 class Solution {
  public:
   string predictPartyVictory(string senate) {
-    int n = senate.size();
-    vector<bool> available(n, true);
-    set<char> s;
-    while (true) {
-      s.clear();
-      for (int i = 0; i < n; ++i)
-        if (available[i]) s.insert(senate[i]);
-      if (s.size() == 1) break;
+    int cnt_r = 0;
+    int cnt_d = 0;
+    for (auto ch: senate) ch == 'R' ? ++cnt_r : ++cnt_d;
 
+    while (cnt_r && cnt_d) {
+      int n = senate.size();
+      vector<bool> available(n, true);
       for (int i = 0; i < n; ++i) {
         if (!available[i]) continue;
-        char ch = senate[i];
-        if (ch == 'R') {
-          for (int j = i+1; j < n+i; ++j) {
-            if (senate[j%n] == 'D' && available[j%n]) {
-              available[j%n] = false;
-              break;
-            }
-          } 
-        } else {
-          for (int j = i+1; j < n+i; ++j) {
-            if (senate[j%n] == 'R' && available[j%n]) {
-              available[j%n] = false;
-              break;
-            }
-          } 
-        }
+
+        for (int j = i+1; j < n+i; ++j) {
+          if (senate[j%n] != senate[i]  && available[j%n]) {
+            available[j%n] = false;
+            senate[i] == 'R' ? --cnt_d : --cnt_r;
+            break;
+          }
+        } 
       }
+      string s = "";
+      for (int i = 0; i < n ; ++i)
+        if (available[i]) s += senate[i];
+      senate = s;
     }
-    return *s.begin() == 'R' ? "Radiant" : "Dire";
+    return cnt_r ? "Radiant" : "Dire";
   }
 };
 

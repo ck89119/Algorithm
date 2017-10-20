@@ -17,21 +17,30 @@ const int MOD = 1000000007;
 
 class Solution {
  public:
-  int check(int x, int m, int n) {
-    int cnt = 0;
-    for (int i = 1; i <= m; ++i) cnt += min(x / i, n);
-    return cnt;
+  int str2int(string s) {
+    int t;
+    istringstream is(s);
+    is >> t;
+    return t; 
   }
 
-  int findKthNumber(int m, int n, int k) {
-    int l = 0;
-    int r = m * n;
-    while (l + 1 < r) {
-      int mid = (l + r) >> 1;
-      if (check(mid, m, n) < k) l = mid;
-      else r = mid;
+  int calPoints(vector<string>& ops) {
+    vector<int> p;
+    for (auto op: ops) {
+      int n = p.size();
+      if (op == "+") {
+        p.push_back(p[n-1]+p[n-2]);
+      } else if (op == "D") {
+        p.push_back(2*p[n-1]);
+      } else if (op == "C") {
+        p.pop_back();
+      } else {
+        p.push_back(str2int(op));
+      }
     }
-    return r;
+    int sum = 0;
+    for (auto n: p) sum += n;
+    return sum;
   }
 };
 
@@ -40,9 +49,6 @@ int main() {
   freopen("in.txt", "r", stdin);
   freopen("out.txt", "w", stdout);
 #endif
-  Solution s;
-  cout << s.findKthNumber(3, 3, 5) << endl;
-  cout << s.findKthNumber(2, 3, 6) << endl;
-
+  
   return 0;
 }

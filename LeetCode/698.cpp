@@ -11,27 +11,35 @@ typedef pair<int, int> pii;
 
 template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
 template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
-const int N = 100000 + 5;
+const int N = 160000 + 5;
 const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
 
+
 class Solution {
  public:
-  int check(int x, int m, int n) {
-    int cnt = 0;
-    for (int i = 1; i <= m; ++i) cnt += min(x / i, n);
-    return cnt;
+  bool dfs(int i, int dep, int k, int s, int sum, vector<bool> &visited, const vector<int> &nums) {
+    if (dep == k) return true;
+    
+    for (; i >= 0; --i)
+      if (!visited[i] && s + nums[i] <= sum) {
+        visited[i] = true;
+        s += nums[i];
+        if (dfs(s==sum?nums.size()-1:i-1, dep+s/sum, k, s%sum, sum, visited, nums)) return true;
+        s -= nums[i];
+        visited[i] = false;
+      }
+    return false;
   }
 
-  int findKthNumber(int m, int n, int k) {
-    int l = 0;
-    int r = m * n;
-    while (l + 1 < r) {
-      int mid = (l + r) >> 1;
-      if (check(mid, m, n) < k) l = mid;
-      else r = mid;
-    }
-    return r;
+  bool canPartitionKSubsets(vector<int>& nums, int k) {
+    int sum = 0;
+    for (auto num: nums) sum += num;
+    if (sum % k) return false;
+
+    sort(nums.begin(), nums.end());
+    vector<bool> visited(nums.size(), false);
+    return dfs(nums.size()-1, 0, k, 0, sum/k, visited, nums);
   }
 };
 
@@ -40,9 +48,6 @@ int main() {
   freopen("in.txt", "r", stdin);
   freopen("out.txt", "w", stdout);
 #endif
-  Solution s;
-  cout << s.findKthNumber(3, 3, 5) << endl;
-  cout << s.findKthNumber(2, 3, 6) << endl;
-
+  
   return 0;
 }

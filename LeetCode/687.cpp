@@ -14,24 +14,41 @@ template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int 
 const int N = 100000 + 5;
 const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
-
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
 class Solution {
  public:
-  int check(int x, int m, int n) {
-    int cnt = 0;
-    for (int i = 1; i <= m; ++i) cnt += min(x / i, n);
-    return cnt;
+  int ans;
+  int dfs(TreeNode* node) {
+    if (node == NULL) return 0;
+    int l = dfs(node->left);
+    int r = dfs(node->right);
+    int cnt = 1;
+    int length = 1;
+    if (node->left != NULL && node->val == node->left->val) {
+      cnt += l;
+      length = max(length, l + 1);
+    }
+    if (node->right != NULL && node->val == node->right->val) {
+      cnt += r;
+      length = max(length, r + 1);
+    }
+    ans = max(ans, cnt);
+    return length;
   }
 
-  int findKthNumber(int m, int n, int k) {
-    int l = 0;
-    int r = m * n;
-    while (l + 1 < r) {
-      int mid = (l + r) >> 1;
-      if (check(mid, m, n) < k) l = mid;
-      else r = mid;
-    }
-    return r;
+  int longestUnivaluePath(TreeNode* root) {
+    if (root == NULL) return 0;
+    ans = 0;
+    dfs(root);
+    return ans - 1;
   }
 };
 
@@ -40,9 +57,6 @@ int main() {
   freopen("in.txt", "r", stdin);
   freopen("out.txt", "w", stdout);
 #endif
-  Solution s;
-  cout << s.findKthNumber(3, 3, 5) << endl;
-  cout << s.findKthNumber(2, 3, 6) << endl;
-
+  
   return 0;
 }

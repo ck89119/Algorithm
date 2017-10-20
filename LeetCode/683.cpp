@@ -17,21 +17,20 @@ const int MOD = 1000000007;
 
 class Solution {
  public:
-  int check(int x, int m, int n) {
-    int cnt = 0;
-    for (int i = 1; i <= m; ++i) cnt += min(x / i, n);
-    return cnt;
-  }
-
-  int findKthNumber(int m, int n, int k) {
-    int l = 0;
-    int r = m * n;
-    while (l + 1 < r) {
-      int mid = (l + r) >> 1;
-      if (check(mid, m, n) < k) l = mid;
-      else r = mid;
+  int kEmptySlots(vector<int>& flowers, int k) {
+    set<int> s;
+    for (int i = 0; i < flowers.size(); ++i) {
+      int x = flowers[i];
+      auto it = s.lower_bound(x);
+      if (it != s.end()) {
+        if (*it - x - 1 == k) return i+1;
+      }
+      if (it != s.begin()) {
+        if (x - *--it - 1 == k) return i+1;
+      }
+      s.insert(x);
     }
-    return r;
+    return -1;
   }
 };
 
@@ -40,9 +39,11 @@ int main() {
   freopen("in.txt", "r", stdin);
   freopen("out.txt", "w", stdout);
 #endif
+  vector<int> flowers;
+  flowers.push_back(1);
+  flowers.push_back(3);
+  flowers.push_back(2);
   Solution s;
-  cout << s.findKthNumber(3, 3, 5) << endl;
-  cout << s.findKthNumber(2, 3, 6) << endl;
-
+  cout << s.kEmptySlots(flowers, 1) << endl;
   return 0;
 }

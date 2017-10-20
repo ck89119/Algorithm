@@ -17,21 +17,22 @@ const int MOD = 1000000007;
 
 class Solution {
  public:
-  int check(int x, int m, int n) {
-    int cnt = 0;
-    for (int i = 1; i <= m; ++i) cnt += min(x / i, n);
-    return cnt;
-  }
-
-  int findKthNumber(int m, int n, int k) {
-    int l = 0;
-    int r = m * n;
-    while (l + 1 < r) {
-      int mid = (l + r) >> 1;
-      if (check(mid, m, n) < k) l = mid;
-      else r = mid;
+  vector<int> constructArray(int n, int k) {
+    vector<int> ans(n);
+    int m = (k - 1) / 2;
+    int cur = 1, i = 0;
+    while (i < n) {
+      if (cur <= m) {
+        ans[i] = cur;
+        ans[i+1] = n+1-cur;
+        ++cur, i += 2;
+      } else {
+        ans[i] = cur;
+        ++cur, ++i;
+      }
     }
-    return r;
+    if (k % 2 == 0) swap(ans[n-1], ans[n-2]);
+    return ans;
   }
 };
 
@@ -41,8 +42,7 @@ int main() {
   freopen("out.txt", "w", stdout);
 #endif
   Solution s;
-  cout << s.findKthNumber(3, 3, 5) << endl;
-  cout << s.findKthNumber(2, 3, 6) << endl;
-
+  out(s.constructArray(10,1));
+  out(s.constructArray(10,5));
   return 0;
 }

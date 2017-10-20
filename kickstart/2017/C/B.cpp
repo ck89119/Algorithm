@@ -15,9 +15,21 @@ const int N = 55 + 5;
 const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
 
+bool check(vector<int> x[N], int n) {
+  bool f = true;
+  for (int i = 0; i < n; ++i) {
+    if (x[i].size() <= 0 || x[i].size() > 2) return false;
+    if (x[i].size() == 1) {
+      if (f) f = false;
+      else return false;
+    }
+  }
+  return !f;
+}
+
 int main() {
 #ifndef ONLINE_JUDGE
-  freopen("B-small-practice.in", "r", stdin);
+  freopen("B-large-practice.in", "r", stdin);
   freopen("out.txt", "w", stdout);
 #endif
   int T;
@@ -27,29 +39,36 @@ int main() {
     char maze[N][N];
     scanf("%d", &n); getchar();
     for (int i = 0; i < n; ++i) scanf("%s", maze[i]);
-    int c[N], r[N];
+    vector<int> r[N], c[N];
     clr(c, 0); clr(r, 0);
     for (int i = 0; i < n; ++i)
       for (int j = 0; j < n; ++j)
-        if (maze[i][j] == 'X') ++r[i], ++c[j];
-  
-    bool ans = true;
-    for (int i = 0; i < n && ans; ++i) {
-      if (r[i] != 1 && r[i] != 2) {
-        ans = false;
-        break;
-      }
-      if (r[i] == 1) {
-        for (int j = 0; j < n; ++j)
-          if (maze[i][j] == 'X' && c[j] !=1 ) {
-            ans = false;
-            break;
-          }
-      }
+        if (maze[i][j] == 'X') r[i].push_back(j), c[j].push_back(i);
+    for (int i = 0; i < n; ++i) {
+      sort(r[i].begin(), r[i].end()); 
+      sort(c[i].begin(), c[i].end()); 
+    }
+    
+    if (!check(r, n) || !check(c, n)) {
+      printf("Case #%d: IMPOSSIBLE\n", ncase); 
+      continue;
     }
 
-
-    printf("Case #%d: %s\n", ncase, ans ? "POSSIBLE" : "IMPOSSIBLE"); 
+    bool visited[N];
+    clr(visited, false);
+    int cnt = 0;
+    for (int i = 0; i < n; ++i) {
+      if (visited[i]) continue;
+      if (c[i].size() == 1) continue;
+      int x0 = c[i][0];
+      int x1 = c[i][1];
+      int y0 = r[x0][0] + r[x0][1] - i;
+      int y1 = r[x1][0] + r[x1][1] - i;
+      if (y0 != y1) break;
+      ++cnt;
+      visited[i] = visited[y0] = true;
+    } 
+    printf("Case #%d: %s\n", ncase, cnt == n / 2 ? "POSSIBLE" : "IMPOSSIBLE"); 
   }
   return 0;
 }

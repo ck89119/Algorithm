@@ -11,38 +11,33 @@ typedef pair<int, int> pii;
 
 template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
 template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
-const int N = 100000 + 5;
+const int N = 1000 + 5;
 const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
 
-class Solution {
- public:
-  int check(int x, int m, int n) {
-    int cnt = 0;
-    for (int i = 1; i <= m; ++i) cnt += min(x / i, n);
-    return cnt;
-  }
-
-  int findKthNumber(int m, int n, int k) {
-    int l = 0;
-    int r = m * n;
-    while (l + 1 < r) {
-      int mid = (l + r) >> 1;
-      if (check(mid, m, n) < k) l = mid;
-      else r = mid;
-    }
-    return r;
-  }
-};
-
 int main() {
 #ifndef ONLINE_JUDGE
-  freopen("in.txt", "r", stdin);
+  // freopen("in.txt", "r", stdin);
+  freopen("B-large-practice.in", "r", stdin);
   freopen("out.txt", "w", stdout);
 #endif
-  Solution s;
-  cout << s.findKthNumber(3, 3, 5) << endl;
-  cout << s.findKthNumber(2, 3, 6) << endl;
-
+  int T;
+  scanf("%d", &T);
+  for (int ncase = 1; ncase <= T; ++ncase) {
+    int n, e, s[N];
+    scanf("%d%d", &e, &n);
+    for (int i = 0; i < n; ++i) scanf("%d", &s[i]);
+    
+    sort(s, s+n);
+    int h = 0;
+    int ans = 0;
+    for (int i = 0, j = n-1; i <= j; ) {
+      while (i <= j && e > s[i]) e -= s[i++], ++h;
+      ans = max(ans, h);
+      if (i <= j && h > 0) e += s[j--], --h;
+      else break;
+    }
+    printf("Case #%d: %d\n", ncase, ans);
+  }
   return 0;
 }

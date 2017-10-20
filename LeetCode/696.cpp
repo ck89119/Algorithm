@@ -17,21 +17,20 @@ const int MOD = 1000000007;
 
 class Solution {
  public:
-  int check(int x, int m, int n) {
+  int countBinarySubstrings(string s) {
+    int n = s.size();
     int cnt = 0;
-    for (int i = 1; i <= m; ++i) cnt += min(x / i, n);
-    return cnt;
-  }
 
-  int findKthNumber(int m, int n, int k) {
+    int i = 0;
     int l = 0;
-    int r = m * n;
-    while (l + 1 < r) {
-      int mid = (l + r) >> 1;
-      if (check(mid, m, n) < k) l = mid;
-      else r = mid;
+    for (int j = i + 1; j < n; j = i + 1) {
+      while (j < n && s[j] == s[j-1]) ++j;
+      cnt += min(l, j-i);
+      l = j - i;
+      i = j;
     }
-    return r;
+    cnt += min(l, n-i);
+    return cnt;
   }
 };
 
@@ -41,8 +40,7 @@ int main() {
   freopen("out.txt", "w", stdout);
 #endif
   Solution s;
-  cout << s.findKthNumber(3, 3, 5) << endl;
-  cout << s.findKthNumber(2, 3, 6) << endl;
-
+  cout << s.countBinarySubstrings("00110011") << endl;
+  cout << s.countBinarySubstrings("01010") << endl;
   return 0;
 }

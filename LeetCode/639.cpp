@@ -14,80 +14,73 @@ template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int 
 const int N = 100000 + 5;
 const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
-int f[N][10];
 
 class Solution {
  public:
-  int search(int cur, int x, const string &s) {
-    if (cur < 0) return 1;
-    if (f[cur][x] != -1) return f[cur][x];
-      
-    int ans = 0;
-    if (s[cur] != '*' && x != s[cur] ) {
-      if (x != s[cur] - '0') return f[cur][x] = 0;
-      if (x == 0) {
-        for (int i = 1; i <= 2; ++i)
-          ans = (ans + search(cur-1, i, s)) % MOD;
-      } else if (s[cur] - '0' <= 6) {
-        for (int i = 1; i <= 2; ++i)
-          ans = (ans + search(cur-1, i, s)) % MOD;
-        for (int i = 1; i <= 9; ++i)
-          ans = (ans + search(cur-1, i, s)) % MOD;
-      } else {
-        for (int i = 1; i <= 9; ++i)
-          ans = (ans + search(cur-1, i, s)) % MOD;
-      }
-      return f[cur][x] = ans;
-    } else {
-      
-    
+  int f[N][10];
+  int calc(int i, int x, const string &s) {
+    for (int y = 0; y <= 9; ++y) {
+      f[i][x] += f[i-1][y];
+      f[i][x] %= MOD;
     }
-
-
-
-    int ans = 0;
-    
-    for (int i = 0)
-
-
-
+    for (int z = 0; z <= 9; ++z) {
+      if (s[i-1] == '*' || s[i-1] == '1') f[i][x] += f[i-2][z];
+      f[i][x] %= MOD;
+      if ((s[i-1] == '*' || s[i-1] == '2') && x <= 6) f[i][x] += f[i-2][z];
+      f[i][x] %= MOD;
+    }
+    return 0;
   }
 
   int numDecodings(string s) {
     int n = s.size();
+    if (n == 0) return 0;
+    if (n == 1) return s[0] == '*' ? 9 : s[0] != '0';
+
     clr(f, 0);
-    for (int y = 0; y < 10; ++y) 
-      for (int x = 0; x < 10; ++x)
-        if ((s[1] == '*' || s[1] - '0' == y) && (s[0] == '*' || s[0] - '0' == x)) {
-          f[1][x][y] = 1;
+    for (int x = 1; x <= 9; ++x)
+      if (s[0] == '*' || s[0] - '0' == x) f[0][x] = 1;
+
+    if (s[1] == '0') {
+      for (int y = 1; y <= 2; ++y)
+        if (s[0] == '*' || s[0] - '0' == y) f[1][0] += 1;
+    } else {
+      for (int x = 1; x <= 9; ++x)
+        if (s[1] == '*' || s[1] - '0' == x) {
+          for (int y = 0; y <= 9; ++y) f[1][x] += f[0][y];
         }
-    for (int i = 2; i < n; ++i)
-      for (int p = 0; p < 10; ++p)
-        for (int c = 0; c < 10; ++c) {
-          if (s[i] != '*' && s[i] - '0' != c) continue;
-          for (int x = 0; x < 10; ++x) {
-            f[i][p][c] += f[i-1][x][p];
-            f[i][p][c] %= MOD;
-          }
-          if (p < 2 || (p == 2 && c < 6)) {
-            for (int x = 0; x < 10; ++x)
-              for (int y = 0; y < 10; ++y) {
-                f[i][p][c] += f[i-2][x][y];
-                f[i][p][c] %= MOD;
-              }
-          }
-        }
-    int ans = 0;
-    for (int x = 0; x < 10; ++x) {
-      if (s[n-1] == '*') {
-        for (int y = 0; y < 10; ++y) {
-          ans += f[n-1][x][y];
-          ans %= MOD;
-        } 
+      for (int x = 1; x <= 9; ++x)
+        if ((s[1] == '*' || s[1] - '0' == x) && (s[0] == '*' || s[0] == '1'))
+          f[1][x] += 1;
+      for (int x = 1; x <= 6; ++x)
+        if ((s[1] == '*' || s[1] - '0' == x) && (s[0] == '*' || s[0] == '2'))
+          f[1][x] += 1;
+    }
+
+    for (int i = 2; i < n; ++i) {
+      if (s[i] == '*') {
+        for (int x = 1; x <= 9; ++x) calc(i, x, s);
       } else {
-        ans += f[n-1][x][s[n-1]-'0'];
-        ans %= MOD;
+        int x = s[i] - '0';
+        if (x == 0) {
+          for (int y = 1; y <= 2; ++y)
+            if (s[i-1] == '*' || s[i-1] - '0' == y) {
+              for (int z = 0; z <= 9; ++z) {
+                f[i][x] += f[i-2][z];
+                f[i][x] %= MOD;
+              }
+            }
+        }
+        else {
+          calc(i, x, s);
+        }
       }
+    }
+
+    int ans = 0;
+    for (int i = 0; i <= 9; ++i) {
+      ans += f[n-1][i];
+      ans %= MOD;
     }
     return ans;
   }
@@ -99,7 +92,6 @@ int main() {
   freopen("out.txt", "w", stdout);
 #endif
   Solution s;
-  cout << s.numDecodings("*") << endl;
-  cout << s.numDecodings("1*") << endl;
+  cout << s.numDecodings("***") << endl;
   return 0;
 }

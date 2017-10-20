@@ -17,21 +17,24 @@ const int MOD = 1000000007;
 
 class Solution {
  public:
-  int check(int x, int m, int n) {
-    int cnt = 0;
-    for (int i = 1; i <= m; ++i) cnt += min(x / i, n);
-    return cnt;
+  bool check(int i, int j, const string &s) {
+    while (i < j) {
+      if (s[i] != s[j]) return false;
+      ++i, --j;
+    }
+    return true;
   }
 
-  int findKthNumber(int m, int n, int k) {
-    int l = 0;
-    int r = m * n;
-    while (l + 1 < r) {
-      int mid = (l + r) >> 1;
-      if (check(mid, m, n) < k) l = mid;
-      else r = mid;
+  bool validPalindrome(string s) {
+    int i = 0;
+    int j = s.size() - 1;
+    while (i < j) {
+      if (s[i] != s[j]) {
+        return check(i+1, j, s) || check(i, j-1, s);
+      }
+      ++i, --j;
     }
-    return r;
+    return true;
   }
 };
 
@@ -40,9 +43,6 @@ int main() {
   freopen("in.txt", "r", stdin);
   freopen("out.txt", "w", stdout);
 #endif
-  Solution s;
-  cout << s.findKthNumber(3, 3, 5) << endl;
-  cout << s.findKthNumber(2, 3, 6) << endl;
-
+  
   return 0;
 }
