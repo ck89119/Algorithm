@@ -113,12 +113,12 @@ int binary_search(int arr[], int left, int right, int t) {   //[left, right)
 
 int main() {
   //fin; fout;
-  int arr[5] = {0, 2, 2, 6, 8};
+  int arr[5] = {-3, -2, 1};
   int target;
   while (cin >> target) {
     //cout << binary_search(arr, 0, 5, target) << endl; 
-    cout << binary_search_lower_bound(arr, 0, 5, target) << endl; 
-    cout << binary_search_upper_bound(arr, 0, 5, target) << endl; 
+    // cout << binary_search_lower_bound(arr, 0, 5, target) << endl; 
+    cout << binary_search_upper_bound(arr, 0, 3, target) << endl; 
   }
   return 0;
 }

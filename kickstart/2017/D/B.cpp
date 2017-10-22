@@ -19,6 +19,11 @@ const int MOD = 1000000007;
 ll n, k, a[N], b[N], c, d, e1, e2, f;
 ll sum_a[N], sum_b[N], tn;
 
+int get_k_elements(int *x, int *y) {
+  
+}
+
+
 int gen() {
   ll x = a[0], y = b[0], r = 0, s = 0;
   ll sa[N] = {x}, sb[N] = {y};
@@ -34,32 +39,55 @@ int gen() {
     sb[i] = sb[i-1] + b[i];
   }
   
-  tn = 0;
-  for (int i = 0; i < n; ++i)
-    for (int j = i; j < n; ++j) {
-      sum_a[tn] = sa[j] - (i == 0 ? 0 : sa[i-1]);
-      sum_b[tn] = sb[j] - (i == 0 ? 0 : sb[i-1]);
-      ++tn;
-    }
+  tn = min(k + k, n * (n + 1) / 2);
+  if (tn <= k + k) {
+    int cnt = 0;
+    for (int i = 0; i < n; ++i)
+      for (int j = i; j < n; ++j) {
+        sum_a[cnt] = sa[j] - (i == 0 ? 0 : sa[i-1]);
+        sum_b[cnt] = sb[j] - (i == 0 ? 0 : sb[i-1]);
+        ++cnt;
+      }
+  } else {
+    
+    
+
+
+  }
+
   sort(sum_b, sum_b+tn);
   return 0;
-} 
+}
 
 ll count(ll x) {
-  ll c, cnt = 0;
+  ll cnt = 0, l, r;
   for (int i = 0; i < tn && cnt < k; ++i) {
-    if (sum_a[i] < 0) c = upper_bound(sum_b, sum_b + tn, (x - sum_a[i] - 1) / sum_a[i]) - sum_b;
-    else if (sum_a[i] > 0) c = sum_b + tn - lower_bound(sum_b, sum_b + tn, (x + sum_a[i] - 1) / sum_a[i]);
-    else c = (x <= 0 ? tn : 0);
-    cnt += c;
-  }
+    if (sum_a[i] == 0) cnt += (x <= 0 ? tn : 0);
+    else if (sum_a[i] > 0) {
+      l = 0, r = tn;
+      while (l < r) {
+        ll m = (l + r) >> 1;
+        if (sum_b[m] * sum_a[i] >= x) r = m;
+        else l = m + 1;
+      }
+      cnt += tn - r;
+    } else {
+      l = 0, r = tn;
+      while (l < r) {
+        ll m = (l + r) >> 1;
+        if (sum_b[m] * sum_a[i] >= x) l = m + 1;
+        else r = m;
+      }
+      cnt += r;
+    }
+  } 
   return cnt;    
 }
 
 int main() {
 #ifndef ONLINE_JUDGE
-  freopen("in.txt", "r", stdin);
-  freopen("B-small-practice.in", "r", stdin);
+  // freopen("in.txt", "r", stdin);
+  freopen("B-large-practice.in", "r", stdin);
   freopen("out.txt", "w", stdout);
 #endif
   int T;
@@ -69,7 +97,6 @@ int main() {
     gen();
     ll r = n * n * F * F + 1, l = -r;
     while (l + 1 < r) {
-      // dump(l), dump(r);
       ll m = (l + r) >> 1;
       if (count(m) < k) r = m;
       else l = m;
