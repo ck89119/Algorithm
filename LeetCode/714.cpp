@@ -18,20 +18,13 @@ const int MOD = 1000000007;
 class Solution {
  public:
   int maxProfit(vector<int>& prices, int fee) {
-    int n = prices.size();
-    
-    int f[n/2+1][2];
-    clr(f, 0xc0); f[1][0] = -prices[0]; 
-    for (int i = 1; i < n; ++i)
-      for (int j = n >> 1; j > 0; --j) {
-        f[j][1] = max(f[j][1], f[j][0] + prices[i] - fee);
-        f[j][0] = max(f[j][0], f[j-1][1] - prices[i]);
-      }
-
-    int ans = 0;
-    for (int i = 0; i <= n / 2; ++i)
-      ans = max(f[i][1], ans);
-    return ans;
+    int s0 = -INF, s1 = 0;
+    for (auto p: prices) {
+      int t = s0;
+      s0 = max(s0, s1 - p);
+      s1 = max(s1, t + p - fee);
+    }
+    return s1;
   }
 };
 
@@ -42,7 +35,7 @@ int main() {
   freopen("out.txt", "w", stdout);
 #endif
   Solution s;
-  vector<int> prices = {1,3,7,5,10,3};
-  dump(s.maxProfit(prices, 3));
+  vector<int> prices = {1,3,2,8,4,9};
+  dump(s.maxProfit(prices, 2));
   return 0;
 }
