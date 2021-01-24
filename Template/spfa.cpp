@@ -71,14 +71,14 @@ int spfa(int st, int ed) {
   int vis[MAXM], dis[MAXM], cnt[MAXN];
   while (not q.empty()) q.pop();
   CLR(vis, 0); CLR(dis, INF); CLR(cnt, 0);
-  
+
   dis[st] = 0;
   q.push(st); vis[st] = 1; ++cnt[st];
 
   while (not q.empty()) {
     int u = q.front(); q.pop();
     vis[u] = 0;
-    
+
     for (auto p : e[u]) {
       int v = p.to;
       int w = p.w;
@@ -88,10 +88,10 @@ int spfa(int st, int ed) {
           q.push(v); vis[v] = 1; ++cnt[v];
           if (cnt[v] > n) return 0;
         }
-      } 
+      }
     }
   }
-  
+
   printf("%d\n", dis[ed] == INF ? -1 : dis[ed]);
   return 1;
 }
@@ -123,7 +123,7 @@ int spfa(int st, int ed) {
   //dis[st] = 0;
 
   //while (!q.empty()) {
-    //int u = q.front(); q.pop(); 
+    //int u = q.front(); q.pop();
     //inque[u] = 0;
 
     //for (int i = head[u]; i != -1; i = edge[i].next) {

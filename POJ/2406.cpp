@@ -43,20 +43,22 @@ const int MOD = 1000000007;
 char s[N];
 int fail[N];
 int s_len;
-set<int> factor;
+vector<int> factors;
 
-int get_factor(int x) {
-  factor.clear();
-  for (int i = 1; i * i <= x; ++i) {
+int get_factors(int x) {
+  factors.clear();
+  int i;
+  for (i = 1; i * i < x; ++i) 
     if (x % i == 0) {
-      factor.insert(i);
-      factor.insert(x / i);
+      factors.push_back(i);
+      factors.push_back(x/i);
     }
-  }
+  if (i * i == x) factors.push_back(i);
+  sort(factors.begin(), factors.end());
   return 0;
 }
 
-int KMP() {
+int kmp() {
   fail[0] = -1;
   for (int i = 1, j = -1; i < s_len; ++i) {
     while (j >= 0 && s[i] != s[j+1]) j = fail[j];
@@ -71,38 +73,26 @@ int main() {
   freopen("in.txt", "r", stdin);
   //freopen("out.txt", "w", stdout);
 #endif
-  //for (int i = 1; i <= 10; ++i) {
-    //dump(i);
-    //get_factor(i);
-    //for (auto x : factor)
-      //printf("%d ", x);
-    //printf("\n");
-  //}
   while (scanf("%s", s), strcmp(s, ".")) {
     s_len = strlen(s);
-    get_factor(s_len);
-    KMP();
-    //out(fail, s_len);
-    //for (auto x : factor)
-      //printf("%d ", x);
-    //printf("\n");
-    
-    set<int>::iterator it;
-    for (it = factor.begin(); it != factor.end(); ++it) {
-      int l = (int)(*it);
-      int n = s_len / l;
-      //dump(l);
-      //dump(n);
+    get_factors(s_len);
+//    out(factors);
+    kmp();
+//    out(fail, s_len);
+   
+    for (int i = 0; i < factors.size(); ++i) {
+      int l = factors[i];
       int flag = 1;
-      for (int i = 1; i < n && flag; ++i)
-        for (int j = 0; j < l && flag; ++j)
-          if (fail[l*i+j] != l*(i-1) + j)
-            flag = 0;
+      for (int i = 2; i <= s_len / l; ++i)
+        if (fail[l*i-1] != l*(i-1)-1) {
+          flag = 0;
+          break;
+        }
       if (flag) {
-        printf("%d\n", n);
+        printf("%d\n", s_len / l);
         break;
       }
-    }
+    } 
   }
   return 0;
 }

@@ -1,71 +1,42 @@
-/*
-ID: ck891191
-PROG:
-LANG: C++
-*/
-#include <iostream>
-#include <cstdio>
-#include <vector>
-#include <map>
-#include <string>
-#include <cstring>
-#include <algorithm>
-#include <cmath>
+#include <bits/stdc++.h>
 using namespace std;
-#define dump(x) cerr<<__LINE__<<"  "<<#x<<"  :  "<<(x)<<endl;
-#define two(X) (1<<(X))
-#define towL(X) (((int64)(1))<<(x))
-#define contain(S,X) ((S&two(X))>0)
-#define containL(S,X) ((S&twoL(X))>0)
-#define FR(i,a,b) for(int i=(a);i<(b);++i)//[a,b)
-#define FOR(i,n) FR(i,0,n)//[0,n)
-#define RF(i,a,b) for(int i=(a)-1;i>=(b);--i)//(a,b]
-#define ROF(i,n) RF(i,n,0)//[0,n)
-#define CL(a,x) memset(a,x,sizeof(a))
 
-const int INF=(1<<30);
-const double PI=acos(-1.0);
-const double EPS=1e-11;
-const int n=5;
+#define dump(x) cout <<  __LINE__ << " : "<< #x << "  =  " << (x) << endl
+#define clr(a, x) memset(a, x, sizeof(a)) //0:0, -1:-1, INF:0x3f, -INF:0xc0
+#define mp(a, b) make_pair(a, b)
+#define pb(a) push_back(a)
+#define lowbit(x) x & (-x)
+typedef long long ll;
+typedef pair<int, int> pii;
 
-inline int swap(int &x, int &y) {
-    int t = x;
-    x = y;
-    y = t;
-    return 0;
-}
+template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+const int N = 100000 + 5;
+const int INF = 0x3f3f3f3f;
+const int MOD = 1000000007;
 
-int rev(int a[n], int begin, int end) {
-    int i, j;
-    for (i = begin; i < end; i++)
-        for (j = i+1; j < end; j++)
-            if (a[i] > a[j]) swap(a[i], a[j]);
-    return 0;
-}
-
-int nextPermutation(int a[n]) {
-    int i;
-    for (i = n-1; i > 0; i--) {
-        if (a[i-1] < a[i]) {
-            int j = n-1;
-            while (a[i-1] >= a[j]) j--;
-            swap(a[i-1], a[j]);
-            sort(a+i, a+n);
-            return 0;
-        }
+int next_permutation(int *a, int n) {
+  for (int i = n-1; i > 0; i--) {
+    if (a[i-1] < a[i]) {
+      int j = n-1;
+      while (a[i-1] >= a[j]) j--;
+      swap(a[i-1], a[j]);
+      sort(a+i, a+n);
+      return 0;
     }
-    //for (int i = 0; i < 5; i++)
-        //cout << a[i] << ' ';
-    //cout << endl;
-    //rev(a, 0, n);
-    return 0;
+  }
+  sort(a, a+n);
+  return 0;
 }
 
-int main(){
-    int a[n] = {3, 2, 5, 4, 1};
-    nextPermutation(a);
-    for (int i = 0; i < 5; i++)
-        cout << a[i] << ' ';
-    cout << endl;
-    return 0;
-}
+int main() {
+#ifndef ONLINE_JUDGE
+  freopen("in.txt", "r", stdin);
+//  freopen("out.txt", "w", stdout);
+#endif
+  int n = 5;
+  int a[5] = {3, 2, 5, 4, 1};
+  next_permutation(a, n);
+  out(a, 5);
+  return 0;
+} 

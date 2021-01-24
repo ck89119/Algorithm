@@ -58,7 +58,7 @@ int KMP() {
     if (s[i] == s[j+1]) ++j;
     fail[i] = j;
   }
-  //out(fail, la);
+  out(fail, la);
   print(la-1);
   printf("\n");
   return 0;

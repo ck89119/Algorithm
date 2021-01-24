@@ -88,7 +88,7 @@ struct AC_automaton {
       cur = v;
       while (v) {
         ans += end[v];
-        end[v] = 0;
+        // end[v] = 0;
         v = fail[v];
       }
       ++s;

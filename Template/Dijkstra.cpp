@@ -2,7 +2,7 @@
 using namespace std;
 
 #define dump(x) cerr <<  __LINE__ << " : "<< #x << "  =  " << (x) << endl
-#define CLR(a, x) memset(a, x, sizeof(a)) //0:0, -1:-1, INF:0x3f, -INF:0x80
+#define clr(a, x) memset(a, x, sizeof(a)) //0:0, -1:-1, INF:0x3f, -INF:0x80
 #define MP(A, B) make_pair(A, B)
 #define PB(A) push_back(A)
 #define lson l, m, rt << 1
@@ -10,7 +10,7 @@ using namespace std;
 #define lowbit(x) x & (-x)
 typedef long long LL;
 typedef unsigned long long ULL;
-typedef pair<int, int> PII;
+typedef pair<int, int> pii;
 
 template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
 template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
@@ -19,30 +19,27 @@ const int M = 9999999;
 const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
 
-int dis[N];
-vector<PII> edge[N];
-
-int dijkstra(int st) {
-  priority_queue<PII> q;
-  CLR(dis, 0x3f);   
-  dis[st] = 0;
-  q.push(make_pair(dis[st], st));
+vector<int> dijkstra(int s, const vector<vector<pii>> &graph) {
+  int n = graph.size();
+  vector<int> d(n, INF);
+  priority_queue<pii> q;
+  d[s] = 0; q.emplace(0, s);
 
   while (!q.empty()) {
-    int d = -q.top().first;
-    int u = q.top().second;
+    auto p = q.top();
+    int dis = -p.first;
+    int u = p.second;
 
-    for (int i = 0; i < edge[u].size(); ++i) {
-      int v = edge[u][i].first;
-      int w = edge[u][i].second;
-      
-      if (dis[v] > d + w) {
-        dis[v] = d + w;
-        q.push(make_pair(-dis[v], v));
+    for (auto e: graph[u]) {
+      int v = e.first;
+      int w = e.second;
+      if (d[v] > dis + w) {
+        d[v] = dis + w;
+        q.emplace(-d[v], v);
       }
     }
   }
-  return 0;
+  return d;
 }
 
 
