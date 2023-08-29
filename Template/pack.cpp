@@ -1,33 +1,20 @@
-/*
-ID: ck891191
-PROG:
-LANG: C++
-*/
-#include <iostream>
-#include <cstdio>
-#include <vector>
-#include <map>
-#include <string>
-#include <cstring>
-#include <algorithm>
-#include <cmath>
+#include <bits/stdc++.h>
 using namespace std;
-#define dump(x) cerr<<__LINE__<<"  "<<#x<<"  :  "<<(x)<<endl;
-#define two(X) (1<<(X))
-#define towL(X) (((int64)(1))<<(x))
-#define contain(S,X) ((S&two(X))>0)
-#define containL(S,X) ((S&twoL(X))>0)
-#define FR(i,a,b) for(int i=(a);i<(b);++i)//[a,b)
-#define FOR(i,n) FR(i,0,n)//[0,n)
-#define RF(i,a,b) for(int i=(a)-1;i>=(b);--i)//(a,b]
-#define ROF(i,n) RF(i,n,0)//[0,n)
-#define CL(a,x) memset(a,x,sizeof(a))
 
-const int N = 1000 + 5;
+#define dump(x) cout <<  __LINE__ << " : "<< #x << "  =  " << (x) << endl
+#define clr(a, x) memset(a, x, sizeof(a)) //0:0, -1:-1, INF:0x3f, -INF:0xc0
+#define mp(a, b) make_pair(a, b)
+#define pb(a) push_back(a)
+#define lowbit(x) x & (-x)
+typedef long long ll;
+typedef pair<int, int> pii;
+
+template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
+const int N = 100000 + 5;
 const int V = 100000 + 5;
-const int INF=(1<<30);
-const double PI=acos(-1.0);
-const double EPS=1e-11;
+const int INF = 0x3f3f3f3f;
+const int MOD = 1000000007;
 
 int c[N];
 int f[V];
@@ -35,16 +22,14 @@ int n[N];
 
 // O(N * V)
 int ZeroOnePack(int cost, int value) {
-  int v;
-  for (v = V; v >= cost; --v)
+  for (int v = V; v >= cost; --v)
     f[v] = max(f[v], f[v - cost] + value);
   return 0;
 }
 
 // O(N * V)
 int CompletePack(int cost, int value) {
-  int v;
-  for (v = cost; v <= V; ++v)
+  for (int v = cost; v <= V; ++v)
     f[v] = max(f[v], f[v - cost] + value);
   return 0;
 }
@@ -80,6 +65,8 @@ int MutiplePackII() {
   return 0;
 }
 
+// O(N * V * max{n[i]})
+// 每组的物品互斥
 int GroupPack(int cost, int value, int amount) {
   for (int i = V; i >= 0; --i)
     for (int j = 1; j <= amount; ++j)
@@ -88,10 +75,14 @@ int GroupPack(int cost, int value, int amount) {
   return 0;
 }
 
-int main(){
-  int i;
-  for (i = 1; i <= N; i++){
+int main() {
+#ifndef ONLINE_JUDGE
+  freopen("in.txt", "r", stdin);
+  // freopen("out.txt", "w", stdout);
+#endif
+  for (int i = 1; i <= N; i++){
     XXPack();
   }
+  
   return 0;
 }

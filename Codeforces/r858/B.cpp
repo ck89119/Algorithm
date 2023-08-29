@@ -11,7 +11,7 @@ typedef pair<int, int> pii;
 
 template <class T> void out(T A[],int n){for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
 template <class T> void out(vector<T> A,int n=-1){if(n==-1) n=A.size();for (int i=0;i<n;i++) cout<<A[i]<<" ";cout<<endl;}
-const int N = 100 + 5;
+const int N = 200000 + 5;
 const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
 
@@ -20,27 +20,24 @@ int main() {
   freopen("in.txt", "r", stdin);
   // freopen("out.txt", "w", stdout);
 #endif
-  int n, m;
-  int f[N];
-  while (scanf("%d%d", &n, &m), n + m) {
-    memset(f, 0, sizeof(f));
+  int t;
+  scanf("%d", &t);
+  while (t--) {
+    int n, a[N];
+    int cnt_0 = 0, max_v = 0;
+    scanf("%d", &n);
     for (int i = 0; i < n; ++i) {
-      int a[N];
-      for (int j = 1; j <= m; ++j) {
-        scanf("%d", &a[j]);
-      }
-      
-      for (int j = m; j > 0; --j)
-        for (int k = 1; k <= j; ++k) {
-          f[j] = max(f[j], f[j-k] + a[k]);
-        }
+      scanf("%d", &a[i]);
+      cnt_0 += a[i] == 0;
+      max_v = max(max_v, a[i]);
+    } 
+    if (cnt_0 <= n - cnt_0 + 1) {
+      printf("0\n"); 
+    } else if (max_v != 1) {
+      printf("1\n"); 
+    } else {
+      printf("2\n"); 
     }
-
-    int ans = 0;
-    for (int i = 0; i <= m; ++i) {
-      ans = max(ans, f[i]); 
-    }
-    printf("%d\n", ans);
   }
   return 0;
 }

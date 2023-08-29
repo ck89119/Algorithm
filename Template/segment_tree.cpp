@@ -18,58 +18,225 @@ const int N = 100000 + 5;
 const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
 
-int n, h;
-int t[N<<1], d[N];
-double x[N];
-
+// luogu 3372 3373
+// 区间inc，区间最值/求和
 struct SegmentTree {
-  int n, h;
-  int t[N<<1];
-  double cover[N<<1];
+  // 原始数据数量 a.k.a 叶节点数量
+  int n;
+  // 树高
+  int h;
+  // 数据数组
+  vector<int> t;
+  // delay数据
+  vector<int> d;
+  // 节点管辖区间长度
+  vector<int> len;
 
-  SegmentTree(int _n): n(_n) {
-    h = 0;
-    _n = 2 * _n - 1;
-    while (_n > 0) _n >>= 1, ++h;
-  }
-  
-  int apply(int p, int v) {
-    t[p] += v;
-    if (p > n) cover[p] = t[p] > 0 ? x[p-n+1] - x[p-n] : 0.0;
-    return 0; 
-  } 
-  
-  int push(int l, int r) {
-    int s = h;
-    for (l += n, r += n-1; s > 0; --s)
-      for (int i = (l >> s); i <= (r >> s); ++i)
-        if (t[i]) {
-          apply(i<<1, t[i]);
-          apply(i<<1|1, t[i]);
-          t[i] = 0;
-        } 
-    return 0;
-  }
-  
-  int build(int l, int r) {
-    l += n, r += n-1;
-    for (l >>= 1, r >>= 1; l > 0; l >>= 1, r >>= 1)
-      for (int i = r; i >= l; --i)
-        cover[i] = cover[i<<1] + cover[i<<1|1];
-    return 0;
-  }
+  SegmentTree(const vector<int> &v) {
+    n = v.size();
+    h = get_height(n);
+    t = vector<int>(2 * n);
+    d = vector<int>(2 * n);
+    len = vector<int>(2 * n);
 
-  int update(int l, int r, int v) {
-    int tl = l, tr = r;
-    for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
-      if (l & 1) apply(l++, v);
-      if (r & 1) apply(--r, v);
+    for (int i = 0; i < n; ++i) {
+      t[i+n] = v[i];
+      len[i+n] = 1;
     }
-    push(tl, tr), build(tl, tr);
+
+    for (int i = n- 1; i > 0; --i) {
+      // t[i] = max(t[i<<1], t[i<<1|1]);
+      t[i] = t[i<<1] + t[i<<1|1];
+      len[i] = len[i<<1] + len[i<<1|1];
+    } 
+    // out(len);
+  }
+
+  // n个叶节点的树高
+  int get_height(int n) {
+    n = 2 * n - 1; 
+
+    int h = 0;
+    while (n > 0) {
+      n >>= 1;
+      ++h;
+    }
+    return h;
+  }
+
+  // 更新当前节点数据，并把delay数据下推
+  int apply(int p, int v) {
+    // max/min
+    // t[p] += v;
+    // if (p < n) d[p] += v;
+
+    // sum
+    t[p] += v * len[p];
+    if (p < n) d[p] += v;
     return 0;
+  }
+  
+  // p节点一直往上更新
+  int push_up(int p) {
+    for (p >>= 1; p > 0; p >>= 1) {
+      // dump(p);
+      // t[p] = max(t[p<<1], t[p<<1|1]) + d[p];
+      t[p] = t[p<<1] + t[p<<1|1] + d[p] * len[p];
+    }
+    return 0;
+  }
+
+  // 从root一直下推到p节点
+  int push_down(int p) {
+    for (int s = h; s > 0; --s) {
+      int i = p >> s;
+      if (d[i]) {
+        apply(i<<1, d[i]);
+        apply(i<<1|1, d[i]);
+        d[i] = 0;
+      }
+    }
+    return 0;
+  }
+  
+  // 区间加
+  int inc(int l, int r, int v) {
+    l += n; r += n;
+
+    for (int i = l, j = r; i < j; i >>= 1, j >>= 1) {
+      if (i & 1) apply(i++, v);
+      if (j & 1) apply(--j, v);
+    }
+    // dump(tl), dump(tr-1);
+    push_up(l); push_up(r - 1);
+    return 0;
+  }
+  
+  // 区间查询
+  int query(int l, int r) {
+    l += n; r += n;
+
+    int ans = 0;
+    push_down(l); push_down(r - 1);
+    for (; l < r; l >>= 1, r >>= 1) {
+      // if (l & 1) ans = max(ans, t[l++]);
+      // if (r & 1) ans = max(ans, t[--r]);
+      if (l & 1) ans += t[l++];
+      if (r & 1) ans += t[--r];
+    }
+    return ans;
   }
 };
 
+// 区间assign，区间最值/求和
+// struct SegmentTree {
+//   // 原始数据数量 a.k.a 叶节点数量
+//   int n;
+//   // 树高
+//   int h;
+//   // 数据数组
+//   vector<int> t;
+//   // delay数据
+//   vector<int> d;
+//   // 节点管辖区间长度
+//   vector<int> len;
+
+//   SegmentTree(vector<int> v) {
+//     n = v.size();
+//     h = get_height(n);
+//     t = vector<int>(2 * n);
+//     d = vector<int>(2 * n);
+//     len = vector<int>(2 * n);
+
+//     for (int i = 0; i < n; ++i) {
+//       t[i+n] = v[i];
+//       len[i+n] = 1;
+//     }
+//   }
+
+//   // n个叶节点的树高
+//   int get_height(int n) {
+//     n = 2 * n - 1; 
+
+//     int h = 0;
+//     while (n > 0) {
+//       n >>= 1;
+//       ++h;
+//     }
+//     return h;
+//   }
+
+//   void init() {
+//     for (int i = n- 1; i > 0; --i) {
+//       // t[i] = max(t[i<<1], t[i<<1|1]);
+//       t[i] = t[i<<1] + t[i<<1|1];
+//       len[i] = len[i<<1] + len[i<<1|1];
+//     } 
+//     out(len);
+//   }
+  
+//   // 更新当前节点数据，并把delay数据下推
+//   int apply(int p, int v) {
+//     // max/min
+//     // t[p] += v;
+//     // if (p < n) d[p] += v;
+
+//     // sum
+//     t[p] += v * len[p];
+//     if (p < n) d[p] += v;
+//     return 0;
+//   }
+  
+//   // p节点一直往上更新
+//   int push_up(int p) {
+//     for (p >>= 1; p > 0; p >>= 1) {
+//       dump(p);
+//       // t[p] = max(t[p<<1], t[p<<1|1]) + d[p];
+//       t[p] = t[p<<1] + t[p<<1|1] + d[p] * len[p];
+//     }
+//     return 0;
+//   }
+
+//   // 从root推到p节点
+//   int push_down(int p) {
+//     for (int s = h; s > 0; --s) {
+//       int i = p >> s;
+//       if (d[i]) {
+//         apply(i<<1, d[i]);
+//         apply(i<<1|1, d[i]);
+//         d[i] = 0;
+//       }
+//     }
+//     return 0;
+//   }
+  
+//   // 区间加
+//   int inc(int l, int r, int v) {
+//     l += n; r += n;
+//     int tl = l, tr = r;
+//     for (; l < r; l >>= 1, r >>= 1) {
+//       if (l & 1) apply(l++, v);
+//       if (r & 1) apply(--r, v);
+//     }
+//     // dump(tl), dump(tr-1);
+//     push_up(tl); push_up(tr - 1);
+//     return 0;
+//   }
+  
+//   // 区间查询
+//   int query(int l, int r) {
+//     l += n; r += n;
+//     push_down(l); push_down(r - 1);
+//     int ans = 0;
+//     for (; l < r; l >>= 1, r >>= 1) {
+//       // if (l & 1) ans = max(ans, t[l++]);
+//       // if (r & 1) ans = max(ans, t[--r]);
+//       if (l & 1) ans += t[l++];
+//       if (r & 1) ans += t[--r];
+//     }
+//     return ans;
+//   }
+// };
 
 // Single element modifications
 // int build() {
@@ -116,131 +283,103 @@ struct SegmentTree {
 //   return 0;
 // }
 
-// Increment modifications, queries for maximum
-// int apply(int p, int v) {
-//   t[p] += v;
-//   if (p < n) d[p] += v;
+
+// Assignment modifications, sum queries
+// int calc(int p, int k) {
+//   if (d[p] == 0) t[p] = t[p<<1] + t[p<<1|1];
+//   else t[p] = d[p] * k;
+//   return 0;
+// }
+
+// int apply(int p, int v, int k) {
+//   t[p] = v * k;
+//   if (p < n) d[p] = v;
+//   return 0;
+// }
+
+// int build(int p) {
+//   int k = 1;
+//   for (p >>= 1, k <<= 1; p > 0; p >>= 1, k <<= 1) calc(p, k);
 //   return 0;
 // }
 
 // int push(int p) {
-//   for (int s = h; s > 0; --s) {
+//   for (int s = h, k = 1 << (h - 1); s > 0; --s, k >>= 1) {
 //     int i = p >> s;
 //     if (d[i]) {
-//       apply(i<<1, d[i]);
-//       apply(i<<1|1, d[i]);
+//       apply(i<<1, d[i], k);
+//       apply(i<<1|1, d[i], k);
 //       d[i] = 0;
 //     }
 //   }
 //   return 0;
 // }
 
-// int build(int p) {
-//   for (p >>= 1; p > 0; p >>= 1) t[p] = max(t[p<<1], t[p<<1|1]) + d[p];
-//   return 0;
-// }
-
-// int inc(int l, int r, int v) {
-//   l += n; r += n;
-//   int tl = l, tr = r;
-//   for (; l < r; l >>= 1, r >>= 1) {
-//     if (l & 1) apply(l++, v);
-//     if (r & 1) apply(--r, v);
+// int assign(int l, int r, int v) {
+//   l += n, r += n;
+//   int ll = l, rr = r;
+//   push(ll), push(rr-1);   
+//   for (int k = 1; l < r; l >>= 1, r >>= 1, k <<= 1) {
+//     if (l & 1) apply(l++, v, k);
+//     if (r & 1) apply(--r, v, k);
 //   }
-//   build(tl); build(tr - 1);
+//   build(ll), build(rr-1);
 //   return 0;
 // }
 
-// int query(int l, int r) {
-//   l += n; r += n;
-//   push(l); push(r - 1);
-//   int ans = -INF;
+// int sum(int l, int r) {
+//   l += n, r += n;
+
+//   int ans = 0;
+//   push(l), push(r-1);
 //   for (; l < r; l >>= 1, r >>= 1) {
-//     if (l & 1) ans = max(ans, t[l++]);
-//     if (r & 1) ans = max(ans, t[--r]);
+//     if (l & 1) ans += t[l++];
+//     if (r & 1) ans += t[--r];
 //   }
 //   return ans;
 // }
-
-// Assignment modifications, sum queries
-int calc(int p, int k) {
-  if (d[p] == 0) t[p] = t[p<<1] + t[p<<1|1];
-  else t[p] = d[p] * k;
-  return 0;
-}
-
-int apply(int p, int v, int k) {
-  t[p] = v * k;
-  if (p < n) d[p] = v;
-  return 0;
-}
-
-int build(int p) {
-  int k = 1;
-  for (p >>= 1, k <<= 1; p > 0; p >>= 1, k <<= 1) calc(p, k);
-  return 0;
-}
-
-int push(int p) {
-  for (int s = h, k = 1 << (h - 1); s > 0; --s, k >>= 1) {
-    int i = p >> s;
-    if (d[i]) {
-      apply(i<<1, d[i], k);
-      apply(i<<1|1, d[i], k);
-      d[i] = 0;
-    }
-  }
-  return 0;
-}
-
-int assign(int l, int r, int v) {
-  l += n, r += n;
-  int ll = l, rr = r;
-  push(ll), push(rr-1);   
-  for (int k = 1; l < r; l >>= 1, r >>= 1, k <<= 1) {
-    if (l & 1) apply(l++, v, k);
-    if (r & 1) apply(--r, v, k);
-  }
-  build(ll), build(rr-1);
-  return 0;
-}
-
-int sum(int l, int r) {
-  l += n, r += n;
-
-  int ans = 0;
-  push(l), push(r-1);
-  for (; l < r; l >>= 1, r >>= 1) {
-    if (l & 1) ans += t[l++];
-    if (r & 1) ans += t[--r];
-  }
-  return ans;
-}
-
-int init() {
-  // scanf("%d", &n);
-  // for (int i = 0; i < n; ++i)
-  //   scanf("%d", &t[i+n]);
-  n = 4;
-  h = sizeof(int) * 8 - __builtin_clz(2 * n - 1);
-  clr(d, 0);
-  clr(t, 0);
-  for (int i = 0; i < n; ++i)
-    assign(i, i+1, 1);
-  return 0;
-}
 
 int main() {
 #ifndef ONLINE_JUDGE
   freopen("in.txt", "r", stdin);
   //freopen("out.txt", "w", stdout);
 #endif
-  init();
-  dump(sum(0, 4));
-  assign(0, 2, 2);
-  dump(sum(0, 4));
-  assign(2, 4, 3);
-  dump(sum(0, 4));
-  dump(sum(1, 3));
+  SegmentTree s({1, 1, 1, 1, 1});
+  out(s.t);
+  out(s.d);
+  dump("$$$$");
+  dump(s.query(0, 5));
+
+  s.inc(0, 2, 1);
+  out(s.t);
+  out(s.d);
+  dump("$$$$");
+
+  s.inc(1, 4, 2);
+  out(s.t);
+  out(s.d);
+  dump("$$$$");
+
+  s.inc(1, 3, 3);
+  out(s.t);
+  out(s.d);
+  dump("$$$$");
+
+  s.inc(4, 5, 1);
+  out(s.t);
+  out(s.d);
+  dump("$$$$");
+
+  s.inc(2, 5, 5);
+  out(s.t);
+  out(s.d);
+  dump("$$$$");
+
+  dump(s.query(0, 0));
+  dump(s.query(0, 1));
+  dump(s.query(0, 2));
+  dump(s.query(0, 3));
+  dump(s.query(0, 4));
+  dump(s.query(0, 5));
   return 0;
 }

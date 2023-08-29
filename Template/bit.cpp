@@ -13,14 +13,14 @@ const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
 
 struct Fenwick {
-  int c[N];
+  vector<int> c;
 
-  Fenwick() {
-    memset(c, 0, sizeof(c));
+  Fenwick(int _n) {
+    c = vector<int>(_n);
   }
 
   int add(int x, int v) {
-    while (x <= N) {
+    while (x < c.size()) {
       c[x] += v;
       x += x & -x;
     } 
@@ -53,7 +53,7 @@ struct Fenwick {
 struct FenwickRange {
   Fenwick c1, c2;
 
-  FenwickRange() {}
+  FenwickRange(int n, int m): c1(n), c2(m) {}
 
   int add(int l, int r, int v) {
     c1.add(l, v), c1.add(r+1, -v);
@@ -71,7 +71,12 @@ struct FenwickRange {
 };
 
 struct FenwickMax {
-  int a[N], c[N];
+  vector<int> a, c;
+
+  FenwickMax(int n) {
+    a = vector<int>(n);
+    c = vector<int>(n);
+  }
 
   int lowbit(int x) {
     return x & -x;
@@ -109,13 +114,14 @@ int main() {
   cin >> n;
   for (int i = 1; i <= n; ++i)
     cin >> a[i];
-  Fenwick s;
+  Fenwick s(n);
   for (int i = 1; i <= n; ++i) {
     s.add(i, a[i]);
     //cout << sum(i) << endl;
   }
   for (int i = 1; i <= n; ++i) 
-    cout << s.c[i] << endl;
+    // cout << s.c[i] << endl;
+    cout << s.sum(i) << endl;
   
   return 0;
 }
