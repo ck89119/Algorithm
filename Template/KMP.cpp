@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cstdio>
-#include <cstring>
 #include <vector>
 using namespace std;
 
@@ -22,46 +21,47 @@ const int N = 100000 + 5;
 const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
 
-char a[N], b[N];
-// fail[i] means the end index of the longest prefix of b,
-// which equals one of the suffixes of b[0..i]
-int fail[N];
-// kmp[i] means the end index of the longest prefix of b,
-// which equals one of the suffixes of a[0..i]
-int kmp[N];
+vector<int> kmp(const string &s, const string &p) {
+  // fail[i] means the end index of the longest prefix of b,
+  // which equals one of the suffixes of b[0..i]
+  vector<int> fail(p.size());
+  // kmp[i] means the end index of the longest prefix of b,
+  // which equals one of the suffixes of a[0..i]
+  vector<int> ans(s.size());
 
-int KMP() {
-  int la = strlen(a);
-  int lb = strlen(b);
   int j;
   fail[0] = j = -1;
-  for (int i = 1; i < lb; ++i) {
-    while (j >= 0 && b[i] != b[j+1]) j = fail[j];
-    if (b[i] == b[j+1]) ++j;
+  for (int i = 1; i < p.size(); ++i) {
+    while (j >= 0 && p[i] != p[j+1]) j = fail[j];
+    if (p[i] == p[j+1]) ++j;
     fail[i] = j;
   }
-  out(fail, lb);
+  // out(fail);
 
   j = -1;
-  for (int i = 0; i < la; ++i) {
-    dump(a[i]);
-    dump(b[j+1]);
-    while (j >= 0 && a[i] != b[j+1]) j = fail[j];
-    if (a[i] == b[j+1]) ++j;
-    kmp[i] = j;
+  for (int i = 0; i < s.size(); ++i) {
+    // dump(s[i]);
+    // dump(p[j+1]);
+    while (j >= 0 && s[i] != p[j+1]) j = fail[j];
+    if (s[i] == p[j+1]) ++j;
+    ans[i] = j;
   }
-  out(kmp, la);
-  return 0;
+  // out(ans);
+  return ans;
 }
-
 
 int main() {
 #ifndef ONLINE_JUDGE
   freopen("in.txt", "r", stdin);
   //freopen("out.txt", "w", stdout);
 #endif
-  scanf("%s", a);
-  scanf("%s", b);
-  KMP();
+  // kmp("abc", "ab");
+  // string a = "dababcbabc", b = "abc";
+  string a = "aaaa", b = "aa";
+  auto match = kmp(a, b);
+  out(match);
+  for (int i = 0; i < match.size(); ++i) {
+    if (match[i] == b.size() - 1) cout << i - match[i] << endl;
+  }
   return 0;
 }

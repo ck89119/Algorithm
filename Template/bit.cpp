@@ -95,7 +95,7 @@ struct FenwickMax {
   
   void update(int i, int v) {
     a[i] = v;
-    while (i < N) {
+    while (i < a.size()) {
       c[i] = a[i];
       for (int j = 1; j < lowbit(i); j <<= 1)
         c[i] = max(c[i], c[i-j]);

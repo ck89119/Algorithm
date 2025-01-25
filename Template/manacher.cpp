@@ -11,45 +11,39 @@ const int N = 1000000 + 5;
 const int INF = 0x3f3f3f3f;
 const int MOD = 1000000007;
 
-int manacher(string s0) {
+string manacher(string s0) {
   string s = "^#";
   for (int i = 0; i < s0.size(); ++i) {
     s = s + s0[i];
     s = s + "#";
   }
   s += '$';
-  for (auto ch: s) cout << ch << ' '; cout << endl;
+  // for (auto ch: s) cout << ch << ' '; cout << endl;
 
-  int idx = 0, mx = 0, n = s.size();
-  vector<int> p(n, 0);
+  int c = 0, right_most = 0, n = s.size();
+  vector<int> r(n, 1);
   for (int i = 1; i < n; ++i) {
-    if (mx > i) {
-      int j = 2 * idx - i;
-      p[i] = min(p[j], mx-i);
-    } else {
-      p[i] = 1;
+    if (right_most > i) {
+      r[i] = min(r[2 * c - i], right_most - i);
     }
-    while (s[i-p[i]] == s[i+p[i]]) ++p[i];
-    if (i + p[i] > mx) {
-      mx = i + p[i];
-      idx = i;
+    while (s[i - r[i]] == s[i + r[i]]) ++r[i];
+
+    if (i + r[i] > right_most) {
+      right_most = i + r[i];
+      c = i;
     } 
   }
-  out(p, s.size());
+  // out(r, s.size());
 
-  int max = 0, ii;
+  int j = 0;
   for (int i = 1; i < s.size(); ++i) 
-    if (p[i] > max) {
-      max = p[i];
-      ii = i;
+    if (r[i] > r[j]) {
+      j = i;
     }
-  --max;
-  string ans = "";
-  for (int i = ii-max; i <= ii+max; ++i)
-    if (s[i] != '#') ans = ans + s[i];
-  cout << ans << endl;
-
-  return 0;
+  
+  // j - r[j] + 2: 第一个有意义字符
+  // (i - 2) / 2: s[i]对应在s0中的位置
+  return s0.substr((j - r[j]) / 2 , r[j] - 1);
 }
 
 int main() {
@@ -58,6 +52,6 @@ int main() {
   // freopen("out.txt", "w", stdout);
 #endif
   string s0 = "12212321";
-  manacher(s0);
+  cout << manacher(s0) << endl;
   return 0;
 }

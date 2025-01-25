@@ -34,7 +34,8 @@ struct SegmentTree {
 
   SegmentTree(const vector<int> &v) {
     n = v.size();
-    h = get_height(n);
+    // n个叶节点的树共有 2*n-1 个节点
+    h = log2(2 * n) + 1;
     t = vector<int>(2 * n);
     d = vector<int>(2 * n);
     len = vector<int>(2 * n);
@@ -50,18 +51,6 @@ struct SegmentTree {
       len[i] = len[i<<1] + len[i<<1|1];
     } 
     // out(len);
-  }
-
-  // n个叶节点的树高
-  int get_height(int n) {
-    n = 2 * n - 1; 
-
-    int h = 0;
-    while (n > 0) {
-      n >>= 1;
-      ++h;
-    }
-    return h;
   }
 
   // 更新当前节点数据，并把delay数据下推
@@ -99,7 +88,7 @@ struct SegmentTree {
     return 0;
   }
   
-  // 区间加
+  // 区间加[l, r)
   int inc(int l, int r, int v) {
     l += n; r += n;
 
@@ -112,7 +101,7 @@ struct SegmentTree {
     return 0;
   }
   
-  // 区间查询
+  // 区间查询[l, r)
   int query(int l, int r) {
     l += n; r += n;
 
@@ -127,116 +116,6 @@ struct SegmentTree {
     return ans;
   }
 };
-
-// 区间assign，区间最值/求和
-// struct SegmentTree {
-//   // 原始数据数量 a.k.a 叶节点数量
-//   int n;
-//   // 树高
-//   int h;
-//   // 数据数组
-//   vector<int> t;
-//   // delay数据
-//   vector<int> d;
-//   // 节点管辖区间长度
-//   vector<int> len;
-
-//   SegmentTree(vector<int> v) {
-//     n = v.size();
-//     h = get_height(n);
-//     t = vector<int>(2 * n);
-//     d = vector<int>(2 * n);
-//     len = vector<int>(2 * n);
-
-//     for (int i = 0; i < n; ++i) {
-//       t[i+n] = v[i];
-//       len[i+n] = 1;
-//     }
-//   }
-
-//   // n个叶节点的树高
-//   int get_height(int n) {
-//     n = 2 * n - 1; 
-
-//     int h = 0;
-//     while (n > 0) {
-//       n >>= 1;
-//       ++h;
-//     }
-//     return h;
-//   }
-
-//   void init() {
-//     for (int i = n- 1; i > 0; --i) {
-//       // t[i] = max(t[i<<1], t[i<<1|1]);
-//       t[i] = t[i<<1] + t[i<<1|1];
-//       len[i] = len[i<<1] + len[i<<1|1];
-//     } 
-//     out(len);
-//   }
-  
-//   // 更新当前节点数据，并把delay数据下推
-//   int apply(int p, int v) {
-//     // max/min
-//     // t[p] += v;
-//     // if (p < n) d[p] += v;
-
-//     // sum
-//     t[p] += v * len[p];
-//     if (p < n) d[p] += v;
-//     return 0;
-//   }
-  
-//   // p节点一直往上更新
-//   int push_up(int p) {
-//     for (p >>= 1; p > 0; p >>= 1) {
-//       dump(p);
-//       // t[p] = max(t[p<<1], t[p<<1|1]) + d[p];
-//       t[p] = t[p<<1] + t[p<<1|1] + d[p] * len[p];
-//     }
-//     return 0;
-//   }
-
-//   // 从root推到p节点
-//   int push_down(int p) {
-//     for (int s = h; s > 0; --s) {
-//       int i = p >> s;
-//       if (d[i]) {
-//         apply(i<<1, d[i]);
-//         apply(i<<1|1, d[i]);
-//         d[i] = 0;
-//       }
-//     }
-//     return 0;
-//   }
-  
-//   // 区间加
-//   int inc(int l, int r, int v) {
-//     l += n; r += n;
-//     int tl = l, tr = r;
-//     for (; l < r; l >>= 1, r >>= 1) {
-//       if (l & 1) apply(l++, v);
-//       if (r & 1) apply(--r, v);
-//     }
-//     // dump(tl), dump(tr-1);
-//     push_up(tl); push_up(tr - 1);
-//     return 0;
-//   }
-  
-//   // 区间查询
-//   int query(int l, int r) {
-//     l += n; r += n;
-//     push_down(l); push_down(r - 1);
-//     int ans = 0;
-//     for (; l < r; l >>= 1, r >>= 1) {
-//       // if (l & 1) ans = max(ans, t[l++]);
-//       // if (r & 1) ans = max(ans, t[--r]);
-//       if (l & 1) ans += t[l++];
-//       if (r & 1) ans += t[--r];
-//     }
-//     return ans;
-//   }
-// };
 
 // Single element modifications
 // int build() {
@@ -258,6 +137,7 @@ struct SegmentTree {
 //   }
 //   return ans;
 // }
+
 
 // Modification on interval, single element access 
 // int update(int l, int r, int delta) {
@@ -381,5 +261,12 @@ int main() {
   dump(s.query(0, 3));
   dump(s.query(0, 4));
   dump(s.query(0, 5));
-  return 0;
+  
+  // SegmentTree s({1, 1, 1, 1, 1});
+  // for (int i = 1; i < 18; ++i) {
+  //   cout << "i = " << 2 * i << ", height = " << s.get_height(i) 
+  //       << ", log2(i) + 1 = " << int(log2(2 * i)) + 1
+  //       << endl;
+  // }
+  // return 0;
 }

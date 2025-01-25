@@ -17,7 +17,7 @@ struct Node {
 Node *root;
 int m;
 
-void insert(Node *root,char *s) {
+void insert(Node *root, char *s) {
   Node *p = root;
   for (int i = 0; s[i]; i++) {
     int x = s[i] - 'a';
@@ -30,7 +30,7 @@ void insert(Node *root,char *s) {
   p->isword = true;
 }
 
-bool del(Node *root,char *s) {
+bool del(Node *root, char *s) {
   Node *p = root;
   for (int i = 0; s[i]; i++) {
     int x = s[i] - 'a';

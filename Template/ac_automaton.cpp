@@ -22,13 +22,13 @@ const double PI= acos(-1.0);
 const double EPS= 1e-11;
 const int CHILD_NUM = 26;
 
-struct AC_automaton {
+struct AcAutomaton {
   int next[N][CHILD_NUM], fail[N];
   int end[N];
   int size, root;
 
   int NewNode() {
-    clr(next[size], -1);
+    memset(next[size], -1, sizeof(next[size]));
     end[size] = 0;
     return size++;
   }
@@ -106,7 +106,8 @@ struct AC_automaton {
     return 0;
   }
 };
-AC_automaton ac;
+
+AcAutomaton ac;
 
 int main() {
   int T;
